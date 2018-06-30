@@ -1,0 +1,74 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}USER{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">Liste des membres</h1>
+
+    <table class="table">
+    
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Pseudo</th>
+                <th>Email</th>
+                <th>Modifié le</th>
+                <th>Role</th>
+                <th># Questions</th>
+                <th># Réponses</th>
+                <th># Votes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.updatedAt|date('d-m-Y à H:i') }}</td>
+                <td>{{ user.role }}</td>
+                <td>{{ user.questions|length }}</td>
+                <td>{{ user.reponses|length }}</td>
+                <td>{{ (user.voteReponses|length) + (user.voteQuestions|length) }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('backend_user_show', {'id': user.id}) }}">Voir</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-success" href="{{ path('backend_user_edit', {'id': user.id}) }}">Modifier le role</a>
+                    {% endif %}
+                    <form class="d-inline" method="post" action="{{ path('backend_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Etes-vous sur de vouloir supprimer ce membre ?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                        <button class="btn btn-danger">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Pas de membre trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-wrapper">
+        <div class="pagination">
+        {% if pagination.page>1 %}
+        <a class="prev page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': 1})) }}">Prev</a>
+        <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page-1})) }}"><<a>
+        {% endif %}
+
+        {% if user_count!=0 %}
+        {% for p in range(max(pagination.page-5, 1), min(pagination.page+5, pagination.pages_count)) %}
+            <a{% if p == pagination.page %} class="page-numbers"{% endif %} class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': p})) }}">{{ p }}</a>
+        {% endfor %}
+        {% endif %}
+
+        {% if pagination.page<pagination.pages_count %}
+        <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page+1})) }}">></a>
+        <a class="next page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.pages_count})) }}">Next</a>
+        {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

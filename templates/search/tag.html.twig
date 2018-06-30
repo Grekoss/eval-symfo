@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tag.name }}{% endblock %}
+
+{% block body %}
+
+<div class="home-questions-container">
+
+    <h1 class="backend-title primary-0 primary-text-4">Recherche de tag : {{ tag.name }}</h1>
+
+    {% for question in questions %}
+        {% include 'partiels/_question_card.html.twig' %}
+    {% endfor %}
+
+</div>
+
+{% endblock %}

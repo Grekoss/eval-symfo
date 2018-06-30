@@ -1,0 +1,13 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}MODIFIER{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">Modifier la réponse</h1>
+
+    {{ include('backend/reponse/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    <a class="btn btn-secondary" href="{{ path('backend_reponse_index') }}">Retour à la liste</a>
+
+    {{ include('backend/reponse/_delete_form.html.twig') }}
+{% endblock %}

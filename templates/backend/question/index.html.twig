@@ -1,0 +1,69 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}QUESTION{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">Liste des questions</h1>
+
+    {# <a href="{{ path('backend_question_new') }}" class="btn btn-primary"><i class="fas fa-plus-circle icon-button"></i>Créer</a> #}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Titre</th>
+                <th>Nombre de réponses</th>
+                <th style="width: 10em;">Crée le</th>
+                <th>Votes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for question in questions %}
+            <tr class={{ question.isActive ? "" : "alert-danger" }}>
+                <td>{{ question.id }}</td>
+                <td>{{ question.title }}</td>
+                <td>{{ question.reponses|length }}</td>
+                <td>{{ question.createdAt|date('d-m-Y à H:i') }}</td>
+                <td>{{ question.vote|length }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('backend_question_show', {'id': question.id}) }}">Voir</a>
+                    <a class="btn btn-success" href="{{ path('backend_question_edit', {'id': question.id}) }}">Modifier</a>
+                    <a class="btn btn-warning" href="{{ path('backend_question_active', {'id': question.id}) }}">Dé/Activer</a>
+                    <a class="btn btn-light" href="{{ path('backend_question_listReponse', {'id': question.id}) }}">Réponses</a>
+                    <form class="d-inline" method="post" action="{{ path('backend_question_delete', {'id': question.id}) }}" onsubmit="return confirm('Etes-vous sur de vouloir supprimer cette question ?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                        <button class="btn btn-danger">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">Pas de question trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination-wrapper">
+        <div class="pagination">
+        {% if pagination.page>1 %}
+        <a class="prev page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': 1})) }}">Prev</a>
+        <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page-1})) }}"><<a>
+        {% endif %}
+
+        {% if question_count!=0 %}
+        {% for p in range(max(pagination.page-2, 1), min(pagination.page+2, pagination.pages_count)) %}
+            <a{% if p == pagination.page %} class="page-numbers"{% endif %} class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': p})) }}">{{ p }}</a>
+        {% endfor %}
+        {% endif %}
+
+        {% if pagination.page<pagination.pages_count %}
+        <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page+1})) }}">></a>
+        <a class="next page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.pages_count})) }}">Next</a>
+        {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

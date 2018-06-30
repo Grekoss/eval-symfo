@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="text-center">
+
+    {% if error %}
+    <div class="alert alert-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+    <form class="form-signin" action="{{ path('login') }}" method="post">
+        <img class="mb-4" src="{{ asset('assets/images/icon.svg') }}" alt="Tête remplie de questions" width="72" height="72">
+        <h2 class="h3 mb-3 font-weight-normal">Veuillez vous connecter</h2>
+        <label for="username" class="sr-only">Pseudo:</label>
+        <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control" placeholder="Pseudo" required autofocus/>
+
+        <label for="password" class="sr-only">Mot de Passe:</label>
+        <input type="password" id="password" name="_password" class="form-control mb-3" placeholder="Mot de Passe" required/>
+
+        <button type="submit" class="btn btn-lg btn-primary btn-block">Se connecter</button>
+    </form>
+
+</div>
+{% endblock %}

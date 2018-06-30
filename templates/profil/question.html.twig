@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Questions{% endblock %}
+
+{% block body %}
+
+    <div class="home-questions-container">
+
+        {% for question in questions %}
+             <div class="home-questions-container">
+             
+                {% include 'partiels/_question_card.html.twig' %}
+                
+            </div>
+        {% else %}
+            <div class="text-center alert alert-warning" role="alert">
+                <p>Vous n'avez pas posé de questions</p>
+                <p>Il n'est pas trop tard!</p>
+                <a href="{{ path('question_new')}}" class="btn primary-4 primary-text-1 nav-user-button"><i class="fas fa-search-plus icon-button"></i>Poser une question</a>
+            </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+

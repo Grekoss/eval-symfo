@@ -1,0 +1,55 @@
+<div class="home-question-container">
+    <div class="home-question-container-header row">
+        <div class="home-question-container-header-secondary col">
+
+            {# Bouton pour désactiver la réponse #}
+            {% if is_granted('ROLE_MODERATOR') %}
+                <a class="home-question-link-admin" href="{{ path('backend_reponse_active', {'id': reponse.id}) }}">
+                    <i class="fas fa-times-circle home-question-icon-admin"></i>
+                </a>
+            {% endif %}
+
+        </div>
+    </div>
+    <p class="home-question-container-body primary-text-4">{{ reponse.body }}</p>
+    <div class="home-question-container-footer row ">
+        <div class="home-question-container-footer-secondary">
+            <div class="home-question-footer-author">Réponse de :
+                <a class="home-question-link primary-text-0" href="{{ path('search_author', {'id': reponse.author.id}) }}">{{ reponse.author|capitalize }}</a>
+                Le :
+                {{ reponse.createdAt|date('d-m-Y') }}
+            </div>
+        </div>
+        <div class="home-question-container-footer-secondary">
+
+            {% if is_granted('ROLE_USER') %}
+
+                {# Vérifie si la personne connecté est l'auteur de la question #}
+                {% if reponse.author.id == app.user.id %}
+                    <a href="{{ path('reponse_edit', {'id': reponse.id}) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                    <form method="post" class="d-inline-block" action="{{ path('reponse_delete', {'id': reponse.id}) }}" onsubmit="Etes-vous sur de vouloir supprimer cette réponse ?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reponse.id) }}">
+                        <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                {% endif %}
+
+                {# Vérifie si la question a été posé par la personne connecté afin de choisir la bonne réponse #}
+                {% if reponse.question.author.id == app.user.id %}
+                    <a href="{{ path('best_reponse', {'id': reponse.id}) }}" class="btn btn-warning"><i class="fas fa-trophy"></i></i></a>
+                {% endif %}
+                
+
+            {% endif %}
+        </div>
+
+        {% if is_granted('ROLE_USER') %}
+            <div class="home-question-vote">{{ reponse.vote|length }}
+                <a class="home-question-link primary-text-0" href="{{ path('vote_reponse', {'id': reponse.id}) }}">
+                    <i class="fas fa-thumbs-up home-question-icon "></i>
+                </a>
+            </div>
+        {% endif %}
+
+    </div>
+</div>

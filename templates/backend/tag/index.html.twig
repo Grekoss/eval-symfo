@@ -1,0 +1,45 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}TAG{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">Liste des tags</h1>
+
+    <a href="{{ path('backend_tag_new') }}" class="btn btn-primary"><i class="fas fa-plus-circle icon-button"></i>Créer</a>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Désignation</th>
+                <th>Couleur du fond</th>
+                <th>Couleur du texte</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tag in tags %}
+            <tr>
+                <td>{{ tag.id }}</td>
+                <td>{{ tag.name }}</td>
+                <td style="background-color:{{ tag.backgroundColor }};color:{{ tag.textColor }};">{{ tag.backgroundColor }}</td>
+                <td style="background-color:{{ tag.backgroundColor }};color:{{ tag.textColor }};">{{ tag.textColor }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('backend_tag_show', {'id': tag.id}) }}">Voir</a>
+                    <a class="btn btn-success" href="{{ path('backend_tag_edit', {'id': tag.id}) }}">Modifier</a>
+                    <form class="d-inline" method="post" action="{{ path('backend_tag_delete', {'id': tag.id}) }}" onsubmit="return confirm('Etes-vous sur de vouloir supprimer ce tag ?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tag.id) }}">
+                        <button class="btn btn-danger">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">Pas de tag trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

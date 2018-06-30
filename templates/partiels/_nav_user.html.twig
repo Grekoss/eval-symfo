@@ -1,0 +1,11 @@
+<nav class="navbar primary-0 nav-user">
+
+    <a href="{{ path('question_new')}}" class="btn primary-4 primary-text-1 nav-user-button"><i class="fas fa-search-plus icon-button"></i>Poser une question</a>
+
+    <a href="{{ path('user_question', {'id': app.user.id}) }}" class="btn primary-4 primary-text-1 nav-user-button"><i class="fas fa-question icon-button"></i>Mes questions</a>
+
+    <a href="{{ path('user_reponse', {'id': app.user.id}) }}" class="btn primary-4 primary-text-1 nav-user-button"><i class="fas fa-exclamation icon-button"></i>Mes réponses</a>
+
+    <a href="{{ path('user_edit', {'id': app.user.id}) }}" class="btn primary-4 primary-text-1 nav-user-button"><i class="fas fa-cogs icon-button"></i>Profil</a>
+
+</nav>

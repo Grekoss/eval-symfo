@@ -1,0 +1,30 @@
+<nav class="navbar primary-0 nav-main">
+    <div class="nav-main-container d-flex">
+        <a href="{{ path('homepage', {'page': 1}) }}"><img src="{{ asset('assets/images/icon.svg') }}" alt="Tête remplie de questions" class="nav-main-logo"></a>
+        <a href="{{ path('searchAction') }}" class="input-group-text primary-4 primary-text-1 nav-main-button"><i class="fas fa-search"></i></a> 
+    </div>
+
+    <a href="{{ path('homepage', {'page': 1}) }}" class="nav-main-title primary-text-4">FAQ - O'Clock</a>
+
+    <div class="nav-main-container">
+
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            {# Utilisateur = Identifié #}
+            <div class="d-inline primary-text-1">Welcome {{ app.user.username|capitalize }}</div>
+
+            {% if is_granted('ROLE_MODERATOR') %} 
+                <a href={{ path('backend_question_index', {'page': 1}) }} class="btn nav-main-button btn-danger"><i class="fas fa-cogs icon-button"></i>ADMIN</a>
+            {% endif %}
+
+            <a href="{{ path('logout') }}" class="btn primary-4 primary-text-1 nav-main-button"><i class="fas fa-sign-out-alt icon-button"></i>Déconnection</a>
+
+        {% else %}
+
+            {# Utilisateut = Non-Identifié #}
+            <a href="{{ path('register') }}" class="btn primary-4 primary-text-1 nav-main-button"><i class="fas fa-user-plus icon-button"></i>Inscription</a>
+            <a href="{{ path('login') }}" class="btn primary-4 primary-text-1 nav-main-button"><i class="fas fa-sign-in-alt icon-button"></i>Connexion</a>
+        {% endif %}
+        
+    </div>
+
+</nav>

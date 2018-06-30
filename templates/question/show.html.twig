@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Question{% endblock %}
+
+{% block body %}
+
+{# Zone de la Question #}
+    
+<div class="home-questions-container">
+    {% include 'partiels/_question_card.html.twig' %}
+</div>
+
+{# Zone de la meilleure réponse #}
+
+{# Decu de ne pas avoir réussi a utilier ma réponse card afin d'utliser le moin de code #}
+{# Si la question a une réponse valider alors on l'affiche #}
+{% if question.reponseValid != NULL %}
+    <div class="home-questions-container">
+        <h2 class="show-reponses-title primary-text-0">Meilleur réponse sélectionné par l'auteur de la question :</h2>
+        <div class="home-question-container">
+            <p class="home-question-container-body primary-text-4">{{ question.reponseValid.body }}</p>
+            <div class="home-question-container-footer row ">
+                <div class="home-question-container-footer-secondary">
+                    <div class="home-question-footer-author">Réponse de :
+                        <a class="home-question-link primary-text-0" href="{{ path('search_author', {'id': question.reponseValid.author.id}) }}">{{ question.reponseValid.author|capitalize }}</a>
+                        Le : {{ question.reponseValid.createdAt|date('d-m-Y') }}
+                    </div>
+                </div>
+
+                {% if is_granted('ROLE_USER') %}
+                    <div class="home-question-vote">{{ question.reponseValid.vote|length }}
+                        <a class="home-question-link primary-text-0" href="{{ path('vote_reponse', {'id': reponse.id}) }}">
+                            <i class="fas fa-thumbs-up home-question-icon"></i>
+                        </a>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{# Zone des réponses #}
+<div class="home-questions-container">
+
+    {% if reponses | length > 1 %}
+        <h2 class="show-reponses-title primary-text-0">{{ question.reponses|length }} - Réponses à la question :</h2>
+    {% else %}
+        <h2 class="show-reponses-title primary-text-0">{{ question.reponses|length }} - Réponse à la question :</h2>
+    {% endif %}
+
+{% for reponse in reponses %}
+    {% include 'partiels/_reponse_card.html.twig' %}
+{% endfor %}
+
+{# Zone pour répondre si on est membre #}
+{% if is_granted('ROLE_USER') %}
+    {{ include('question/_form_reponse.html.twig') }}
+{% endif %}
+
+</div>
+
+
+{% endblock %}

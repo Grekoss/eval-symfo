@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RECHERCHER{% endblock %}
+
+{% block body %}
+
+<div class="home-questions-container">
+{% include "partiels/_form_search.html.twig" %}
+</div>
+
+{% if resultStatus > 0 %}
+    <div class="home-questions-container">
+
+        <h1 class="backend-title primary-0 primary-text-4">Recherche de : {{ text }}</h1>
+
+        {% for question in questions %}
+            {% include 'partiels/_question_card.html.twig' %}
+        {% endfor %}
+
+    </div>
+{% endif %}
+
+
+{% endblock %}

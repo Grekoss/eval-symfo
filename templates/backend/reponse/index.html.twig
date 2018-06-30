@@ -1,0 +1,47 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}REPONSE{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">Liste des réponses</h1>
+
+    {# <a href="{{ path('backend_reponse_new') }}" class="btn btn-primary">
+    <i class="fas fa-plus-circle icon-button"></i>Créer</a> #}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Réponse</th>
+                <th style="width: 10em;">Crée le</th>
+                <th>Votes</th>
+                <th style="width: 15em;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reponse in reponses %}
+            <tr class={{ reponse.isActive ? "" : "alert-danger" }}>
+                <td>{{ reponse.id }}</td>
+                <td>{{ reponse.body }}</td>
+                <td>{{ reponse.createdAt|date('d-m-Y à H:i') }}</td>
+                <td>{{ reponse.vote|length }}</td>
+                <td>
+                    <a class="btn btn-info" href="{{ path('backend_reponse_show', {'id': reponse.id}) }}">Voir</a>
+                    <a class="btn btn-success" href="{{ path('backend_reponse_edit', {'id': reponse.id}) }}">Modifier</a>
+                    <a class="btn btn-warning" href="{{ path('backend_reponse_active', {'id': reponse.id}) }}">Dé/Activer</a>
+                    <form class="d-inline" method="post" action="{{ path('backend_reponse_delete', {'id': reponse.id}) }}" onsubmit="return confirm('Etes-vous sur de vouloir supprimer cette réponse ?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reponse.id) }}">
+                        <button class="btn btn-danger">Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">Pas de réponse trouvée</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

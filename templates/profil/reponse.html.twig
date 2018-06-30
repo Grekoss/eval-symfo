@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Réponses{% endblock %}
+
+{% block body %}
+
+    <div class="home-questions-container">
+
+        {% for reponse in reponses %}
+             <div class="home-questions-container">
+             <h2 class="primary-4 primary-text-1 profil-reponse-question-title">
+                <i class="far fa-question-circle icon-button"></i>{{ reponse.question.title }}
+            </h2>
+             
+                {% include 'partiels/_reponse_card.html.twig' %}
+                
+            </div>
+        {% else %}
+            <div class="text-center alert alert-warning" role="alert">
+                Vous n'avez pas répondu à des questions
+            </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock %}
+

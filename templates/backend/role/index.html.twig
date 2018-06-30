@@ -1,0 +1,31 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}ROLE{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">Liste des roles</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nom</th>
+                <th>Désignation</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for role in roles %}
+            <tr>
+                <td>{{ role.id }}</td>
+                <td>{{ role.name }}</td>
+                <td>{{ role.label }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Pas de role trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

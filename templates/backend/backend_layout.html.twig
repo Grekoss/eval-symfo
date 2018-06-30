@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ADMIN - {% block titleAdmin %}{% endblock %}{% endblock %}
+
+{% block body %}
+
+{% include 'backend/partiels/_nav_admin.html.twig' %}
+
+<div class="home-questions-container">
+    {% block bodyAdmin %}{% endblock %}
+</div>
+
+{% endblock %}

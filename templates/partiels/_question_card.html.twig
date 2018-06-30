@@ -1,0 +1,70 @@
+<div class="home-question-container">
+    <div class="home-question-container-header row">
+        <a class="home-question-link col-10 primary-text-1 primary-4" href="{{ path('question_show', {'slug': question.slug}) }}">
+            <h2 class="home-question-title">
+                <i class="far fa-question-circle primary-1 primary-text-4 home-question-icon"></i>
+                {{ question.title }}
+            </h2>
+        </a>
+        <div class="home-question-container-header-secondary col">
+
+            {# Bouton pour désactiver la question #}
+            {% if is_granted('ROLE_MODERATOR') %}
+                <a class="home-question-link-admin" href="{{ path('backend_question_active', {'id': question.id}) }}">
+                    <i class="fas fa-times-circle home-question-icon-admin"></i>
+                </a>
+            {% endif %}
+
+            <div class="home-question-container-tag col">
+
+                {% for tag in question.tags %}
+
+                    <a href="{{ path('search_tag', {'slug': tag.slug}) }}" class="badge home-question-tag" style="background-color:{{ tag.backgroundColor }};color:{{ tag.textColor }};">{{ tag.name }}</a>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="home-question-container-footer row ">
+        <div class="home-question-container-footer-secondary">
+            <div class="home-question-footer-author">Question posée par :
+                <a class="home-question-link primary-text-0" href="{{ path('search_author', {'id': question.author.id}) }}">{{ question.author|capitalize }}</a>
+                Le : {{ question.createdAt|date('d-m-Y') }}
+            </div>
+        </div>
+        <div class="home-question-container-footer-secondary">
+
+            {% if is_granted('ROLE_USER') %}
+
+                {# Vérifie si la personne connecté est l'auteur de la question #}
+                {% if question.author.id == app.user.id %}
+                    <a href="{{ path('question_edit', {'id': question.id}) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
+                    <form method="post" class="d-inline-block" action="{{ path('question_delete', {'id': question.id}) }}" onsubmit="Etes-vous sur de vouloir supprimer cette question ?');">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                        <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
+                    </form>
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+        <div class="home-question-container-footer-secondary">
+            <div class="home-question-vote">
+
+            {% if is_granted('ROLE_USER') %}
+                {{ question.vote|length }}
+                <a class="home-question-link primary-text-0" href="{{ path('vote_question', {'id': question.id}) }}"><i class="fas fa-thumbs-up home-question-icon "></i></a>
+            {% endif %}
+
+                {{ question.reponses|length }}
+                {% if question.reponses | length > 1 %}
+                    réponses
+                {% else %}
+                    réponse
+                {% endif %}
+                
+            </div>
+        </div>
+    </div>
+</div>

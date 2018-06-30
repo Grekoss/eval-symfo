@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block body %}
+    <div class="home-questions-container form-signin text-center">
+        
+        {% for info, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ info }}" role="alert">
+                    <i class="fas fa-exclamation-triangle icon-button"></i>{{ message }}
+                </div>
+            {% endfor %}
+            
+        {% endfor %}
+
+        <img class="mb-4" src="{{ asset('assets/images/clavier_question.jpg') }}" alt="Tête remplie de questions" width="200" height="200">
+        <h2 class="h3 mb-3 font-weight-normal">Modification de profil</h2>
+
+        {{ include('backend/user/_form.html.twig', {'button_label': 'Modifier'}) }}
+
+    </div>
+{% endblock %}

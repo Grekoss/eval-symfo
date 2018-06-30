@@ -1,0 +1,48 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}SHOW{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">{{ question.title|capitalize }}</h1>
+
+    <table class="table">
+        <tbody class={{ question.isActive ? "" : "alert-danger" }}>
+            <tr>
+                <th>Id</th>
+                <td>{{ question.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ question.title }}</td>
+            </tr>
+            <tr>
+                <th>Crée le</th>
+                <td>{{ question.createdAt|date('d-m-Y à H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Par</th>
+                <td>{{ question.author|capitalize }}</td>
+            </tr>
+            <tr>
+                <th>Nombre de vote</th>
+                <td>{{ question.vote|length }}</td>
+            </tr>
+            <tr>
+                <th>Tags</th>
+                <td>                
+                {% for tag in question.tags %}
+
+                    <a href="{{ path('backend_tag_index') }}" class="badge home-question-tag" style="background-color:{{ tag.backgroundColor }};color:{{ tag.textColor }};">{{ tag.name }}</a>
+
+                {% endfor %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-secondary" href="{{ path('backend_question_index', {'page': 1}) }}">Retour à la liste</a>
+
+    <a class="btn btn-success" href="{{ path('backend_question_edit', {'id': question.id}) }}">Modifier</a>
+    <a class="btn btn-warning" href="{{ path('backend_question_active', {'id': question.id}) }}">Dé/Activer</a>
+
+    {{ include('backend/question/_delete_form.html.twig') }}
+{% endblock %}

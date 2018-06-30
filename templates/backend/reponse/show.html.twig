@@ -1,0 +1,43 @@
+{% extends 'backend/backend_layout.html.twig' %}
+
+{% block titleAdmin %}SHOW{% endblock %}
+
+{% block bodyAdmin %}
+    <h1 class="backend-title primary-0 primary-text-4">Affichage de la réponse</h1>
+
+    <table class="table">
+        <tbody class={{ reponse.isActive ? "" : "alert-danger" }}>
+            <tr>
+                <th>Id</th>
+                <td>{{ reponse.id }}</td>
+            </tr>
+            <tr>
+                <th>Question</th>
+                <td>{{ reponse.question }}</td>
+            </tr>
+            <tr>
+                <th>Réponse</th>
+                <td>{{ reponse.body }}</td>
+            </tr>
+            <tr>
+                <th>Crée le</th>
+                <td>{{ reponse.createdAt|date('d-m-Y à H:i') }}</td>
+            </tr>
+            <tr>
+                <th>Par</th>
+                <td>{{ reponse.author|capitalize }}</td>
+            </tr>
+            <tr>
+                <th>Nombre de vote</th>
+                <td>{{ reponse.vote|length }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="btn btn-secondary" href="{{ path('backend_reponse_index') }}">Retour à la liste</a>
+
+    <a class="btn btn-success" href="{{ path('backend_reponse_edit', {'id': reponse.id}) }}">Modifier</a>
+    <a class="btn btn-warning" href="{{ path('backend_reponse_active', {'id': reponse.id}) }}">Dé/Activer</a>
+
+    {{ include('backend/reponse/_delete_form.html.twig') }}
+{% endblock %}

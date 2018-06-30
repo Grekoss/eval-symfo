@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier ma question{% endblock %}
+
+{% block body %}
+
+<div class="home-questions-container">
+
+    {{ include('question/_form_question.html.twig', {'button_label': 'Modifier'}) }}
+    
+</div>
+
+
+{% endblock %}
