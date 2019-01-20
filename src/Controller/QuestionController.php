@@ -5,11 +5,15 @@ namespace App\Controller;
 use App\Entity\Question;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Persistence\ObjectManager;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Slugger;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ReponseRepository;
@@ -17,37 +21,36 @@ use App\Form\ReponseType;
 use App\Entity\Reponse;
 
 
-class QuestionController extends Controller
+class QuestionController extends AbstractController
 {
-    /**
-     * @Route("/", name="home")
-     */
-    public function home()
+    private $repository;
+    private $em;
+
+    public function __construct(QuestionRepository $repository, ObjectManager $em)
     {
-        return $this->redirectToRoute('homepage', ['page' => 1]);
+        $this->repository = $repository;
+        $this->em = $em;
     }
 
     /**
-     * @Route("/{page}/", name="homepage", defaults={"page:1"})
+     * @Route("/", name="homepage")
      */
-    public function index($page, QuestionRepository $questionRepository)
-    { 
-        $maxQuestions = '7';
+    public function home(PaginatorInterface $paginator, AuthorizationCheckerInterface $authorizationChecker, Request $request)
+    {
+        //Vérification si visiteur ou simple utilisateur
+        $admin = false;
+        if ( true === $authorizationChecker->isGranted('ROLE_USER')) {
+            $admin = true;
+        }
 
-        $question_count = $questionRepository->countTotalQuestion();
-        $questions = $questionRepository->findAllQuestionByRecentDatePage($page, $maxQuestions);
-
-        $pagination = array(
-            'page' => $page,
-            'route' => 'homepage',
-            'pages_count' => ceil($question_count / $maxQuestions),
-            'route_params' => array()
+        $questions = $paginator->paginate(
+            $this->repository->findAllQuestionByRecentDateAll($admin),
+            $request->query->getInt('page', 1),
+            7
         );
 
         return $this->render('question/index.html.twig', [
-            'question_count' => $question_count,
             'questions' => $questions,
-            'pagination' => $pagination,
         ]);
     }
 

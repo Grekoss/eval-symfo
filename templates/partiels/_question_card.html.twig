@@ -1,4 +1,4 @@
-<div class="home-question-container">
+<div class="home-question-container {% if question.isActive is same as(false) %}banish{% endif %}">
     <div class="home-question-container-header row">
         <a class="home-question-link col-10 primary-text-1 primary-4" href="{{ path('question_show', {'slug': question.slug}) }}">
             <h2 class="home-question-title">

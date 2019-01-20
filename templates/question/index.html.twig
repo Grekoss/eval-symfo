@@ -32,21 +32,7 @@
 
 <div class="pagination-wrapper">
     <div class="pagination">
-    {% if pagination.page>1 %}
-       <a class="prev page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': 1})) }}">Prev</a>
-       <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page-1})) }}"><<a>
-    {% endif %}
-
-    {% if question_count!=0 %}
-       {% for p in range(max(pagination.page-2, 1), min(pagination.page+2, pagination.pages_count)) %}
-          <a{% if p == pagination.page %} class="page-numbers"{% endif %} class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': p})) }}">{{ p }}</a>
-       {% endfor %}
-    {% endif %}
-
-    {% if pagination.page<pagination.pages_count %}
-       <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page+1})) }}">></a>
-       <a class="next page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.pages_count})) }}">Next</a>
-    {% endif %}
+        {{ knp_pagination_render(questions) }}
     </div>
 </div>
 

@@ -234,20 +234,16 @@ body {
 }
 
 /* PAGINATION */
-a {
-  text-decoration: none;
+
+.pagination nav {
+    margin: auto;
 }
-.pagination-wrapper {
-  text-align: center;
-  margin: 1,5em 0;
+
+/* BANISH */
+.banish {
+    background-color: lightpink;
 }
-.pagination {
-  display: inline-block;
-  height: 70px;
-  padding: 0 25px;
-  border-radius: 35px;
-  background-color: #eee;
-}
+
 @media only screen and (max-width: 1199px) {
   .pagination {
     height: 50px;

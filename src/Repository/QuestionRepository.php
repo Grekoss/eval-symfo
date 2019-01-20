@@ -21,51 +21,19 @@ class QuestionRepository extends ServiceEntityRepository
     }
 
     /**
-     * Récupérer la liste des questions du plus récents au plus ancien pour Admin (isActive et isNotActive)
+     * Récupérer la liste des questions du plus récents au plus ancien et vérification si l'utilisateur est un admin pour tout afficher (isActive et isNotActive)
      * @return Question[] Returns an array of Question objects
      */
-    public function findAllQuestionByRecentDateAll($page= 1, $maxperpage)
+    public function findAllQuestionByRecentDateAll($admin = false)
     {
         $query = $this->createQueryBuilder('q')
                       ->OrderBy('q.createdAt', 'DESC');
+        // if pour savoir si l'utilisateur n'est pas un admin afin d'afficher seulement les questions activves
+        if (!$admin) {
+            $query->Where('q.isActive = 1');
+        }
 
-        $query->setFirstResult(($page-1) * $maxperpage)
-              ->setMaxResults($maxperpage);
-
-        return new Paginator($query);
-    }
-
-    public function countTotalQuestionAll()
-    {
-        $query = $this->createQueryBuilder('q')
-            ->select('COUNT(q)');
-
-        return $count = $query->getQuery()->getSingleScalarResult();
-    }
-
-    /**
-     * Récupérer la liste des questions du plus récents au plus ancien pour User (isActive seulement) avec la pagination
-     * @return Question[] Returns an array of Question objects
-     */
-    public function findAllQuestionByRecentDatePage($page=1, $maxperpage)
-    {
-        $query = $this->createQueryBuilder('q')
-                      ->OrderBy('q.createdAt', 'DESC')
-                      ->Where('q.isActive = 1');
-
-        $query->setFirstResult(($page-1) * $maxperpage)
-              ->setMaxResults($maxperpage);
-
-        return new Paginator($query);
-    }
-
-    public function countTotalQuestion()
-    {
-        $query = $this->createQueryBuilder('q')
-                      ->select('COUNT(q)')
-                      ->where('q.isActive = 1');
-            
-        return $count = $query->getQuery()->getSingleScalarResult();
+        return $query->getQuery()->getResult();
     }
 
     /**
