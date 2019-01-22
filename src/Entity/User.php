@@ -7,12 +7,20 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use App\Entity\Role;
 
 /**
  * @ORM\Table(name="app_user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(
+ *     fields={"username"},
+ *     message="Ce nom est déjà utilisé"
+ * )
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Cet email est déjà utilisé"
+ * )
  */
 class User implements UserInterface, \Serializable
 {
@@ -40,12 +48,19 @@ class User implements UserInterface, \Serializable
     
     /**
      * @ORM\Column(type="string", length=64)
+     * @Assert\NotBlank(message="Veuillez saisir un mot de passe")
+     * @Assert\Length(
+     *     min=6,
+     *     max=64,
+     *     minMessage="Veuillez saisir un mot de passe avec au moin 6 caractères"
+     * )
      * 
      */
     private $password;
     
     /**
      * @ORM\Column(type="string", length=64)
+     * @Assert\NotBlank(message="Merci de confirmer votre mot de passe")
      * 
      */
     private $passwordConfirm;

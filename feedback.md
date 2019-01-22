@@ -45,7 +45,8 @@ Félicitations pour ce travail abouti et bien conçu en amont :clap: Hormis l'AJ
 
 - [x] Modification de la pagination de la homepage avec une meilleur utilisation a mon goût du bundle de `knp_paginator`. Egalement rajout d'un `background-color` lorsqu'un modérateur banni des questions.
  
-- [ ] Controller les contraintes de validations de toutes les entités.
+- [x] Controller les contraintes de validations de toutes les entités.
+
 - [ ] Controller les redirections
 - [ ] Sécuriter sur la modification des profils
 - [ ] Commenter le CODE!

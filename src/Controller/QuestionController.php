@@ -39,7 +39,7 @@ class QuestionController extends AbstractController
     {
         //Vérification si visiteur ou simple utilisateur
         $admin = false;
-        if ( true === $authorizationChecker->isGranted('ROLE_USER')) {
+        if ( true === $authorizationChecker->isGranted('ROLE_MODERATOR')) {
             $admin = true;
         }
 
