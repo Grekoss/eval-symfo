@@ -92,14 +92,14 @@ class User implements UserInterface, \Serializable
     private $questions;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Question", mappedBy="vote")
+     * @ORM\OneToMany(targetEntity="App\Entity\QuestionLike", mappedBy="user")
      */
-    private $voteQuestions;
+    private $questionLikes;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Reponse", mappedBy="vote")
+     * @ORM\OneToMany(targetEntity="App\Entity\ReponseLike", mappedBy="user")
      */
-    private $voteReponses;
+    private $reponseLikes;
 
     public function __construct()
     {
@@ -108,8 +108,8 @@ class User implements UserInterface, \Serializable
         $this->updatedAt = new \DateTime();
         $this->reponses = new ArrayCollection();
         $this->questions = new ArrayCollection();
-        $this->voteQuestions = new ArrayCollection();
-        $this->voteReponses = new ArrayCollection();
+        $this->questionLikes = new ArrayCollection();
+        $this->reponseLikes = new ArrayCollection();
     }
 
     public function __toString()
@@ -306,56 +306,62 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @return Collection|Question[]
+     * @return Collection|QuestionLike[]
      */
-    public function getVoteQuestions(): Collection
+    public function getQuestionLikes(): Collection
     {
-        return $this->voteQuestions;
+        return $this->questionLikes;
     }
 
-    public function addVoteQuestion(Question $voteQuestion): self
+    public function addQuestionLike(QuestionLike $questionLike): self
     {
-        if (!$this->voteQuestions->contains($voteQuestion)) {
-            $this->voteQuestions[] = $voteQuestion;
-            $voteQuestion->addVote($this);
+        if (!$this->questionLikes->contains($questionLike)) {
+            $this->questionLikes[] = $questionLike;
+            $questionLike->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeVoteQuestion(Question $voteQuestion): self
+    public function removeQuestionLike(QuestionLike $questionLike): self
     {
-        if ($this->voteQuestions->contains($voteQuestion)) {
-            $this->voteQuestions->removeElement($voteQuestion);
-            $voteQuestion->removeVote($this);
+        if ($this->questionLikes->contains($questionLike)) {
+            $this->questionLikes->removeElement($questionLike);
+            // set the owning side to null (unless already changed)
+            if ($questionLike->getUser() === $this) {
+                $questionLike->setUser(null);
+            }
         }
 
         return $this;
     }
 
     /**
-     * @return Collection|Reponse[]
+     * @return Collection|ReponseLike[]
      */
-    public function getVoteReponses(): Collection
+    public function getReponseLikes(): Collection
     {
-        return $this->voteReponses;
+        return $this->reponseLikes;
     }
 
-    public function addVoteReponse(Reponse $voteReponse): self
+    public function addReponseLike(ReponseLike $reponseLike): self
     {
-        if (!$this->voteReponses->contains($voteReponse)) {
-            $this->voteReponses[] = $voteReponse;
-            $voteReponse->addVote($this);
+        if (!$this->reponseLikes->contains($reponseLike)) {
+            $this->reponseLikes[] = $reponseLike;
+            $reponseLike->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeVoteReponse(Reponse $voteReponse): self
+    public function removeReponseLike(ReponseLike $reponseLike): self
     {
-        if ($this->voteReponses->contains($voteReponse)) {
-            $this->voteReponses->removeElement($voteReponse);
-            $voteReponse->removeVote($this);
+        if ($this->reponseLikes->contains($reponseLike)) {
+            $this->reponseLikes->removeElement($reponseLike);
+            // set the owning side to null (unless already changed)
+            if ($reponseLike->getUser() === $this) {
+                $reponseLike->setUser(null);
+            }
         }
 
         return $this;

@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Entity\Reponse;
 use App\Form\ReponseType;
 use App\Repository\ReponseRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/backend/reponse")
  */
-class ReponseController extends Controller
+class ReponseController extends AbstractController
 {
     /**
      * @Route("/", name="backend_reponse_index", methods="GET")

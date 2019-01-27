@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Entity\Question;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,7 +18,7 @@ use App\Entity\Reponse;
 /**
  * @Route("/backend/question")
  */
-class QuestionController extends Controller
+class QuestionController extends AbstractController
 {
     /**
      * @Route("/list/{page}", name="backend_question_index", methods="GET", defaults={"page:1"})

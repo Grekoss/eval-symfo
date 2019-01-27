@@ -46,9 +46,10 @@ Félicitations pour ce travail abouti et bien conçu en amont :clap: Hormis l'AJ
 - [x] Modification de la pagination de la homepage avec une meilleur utilisation a mon goût du bundle de `knp_paginator`. Egalement rajout d'un `background-color` lorsqu'un modérateur banni des questions.
  
 - [x] Controller les contraintes de validations de toutes les entités.
+- [x] Travail sur l'AJAX, en y ajoutant le système de like pour les questions et réponse.
 
 - [ ] Controller les redirections
 - [ ] Sécuriter sur la modification des profils
 - [ ] Commenter le CODE!
-- [ ] AJAX! pour le vote et le bannissement des questions / réponses
+- [ ] AJAX! Le bannissement des questions / réponses
 - [ ] Ajouter du test unitaires

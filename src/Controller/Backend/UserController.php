@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Entity\User;
 use App\Form\UserTypeAdmin;
 use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,7 @@ use App\Repository\QuestionRepository;
 /**
  * @Route("/backend/user")
  */
-class UserController extends Controller
+class UserController extends AbstractController
 {
     /**
      * @Route("/list/{page}", name="backend_user_index", methods="GET", defaults={"page:1"})

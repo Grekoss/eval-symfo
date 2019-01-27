@@ -3,12 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Question;
+use App\Entity\QuestionLike;
 use App\Form\QuestionType;
+use App\Repository\QuestionLikeRepository;
 use App\Repository\QuestionRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -168,18 +169,52 @@ class QuestionController extends AbstractController
     }
 
     /**
-     * @Route("/question/{id}/vote", name="vote_question")
+     * Permet de liker ou unliker une question
+     *
+     * @Route("/question/{id}/like", name="question_like")
+     *
+     * @param Question $question
+     * @param ObjectManager $manager
+     * @param QuestionLikeRepository $likeRepo
+     * @return Response
      */
-    public function voteReponse(Question $question, Request $request, QuestionRepository $questionRepository, UserInterface $user) : Response
+    public function likeQuestion(Question $question, ObjectManager $manager, QuestionLikeRepository $likeRepo) : Response
     {
-        
-        // On sauvegarder l'user   => pourquoi l'user et pas +1? comme ça l'user ne peux voter qu'une fois la réponse et pas "tricher"
-        $question->addVote($user);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($question);
-        $em->flush();
+        $user = $this->getUser();
 
-        return $this->redirectToRoute('homepage', ['page' => 1]);
+        if(!$user) return $this->json([
+            'code' => 403,
+            'message' => 'Unauthorized'
+        ], 403);
+
+        if($question->isQuestionLikedByUser($user)) {
+            $like = $likeRepo->findOneBy([
+                'question' => $question,
+                'user' => $user
+            ]);
+
+            $manager->remove($like);
+            $manager->flush();
+
+            return $this->json([
+                'code' => 200,
+                'message' => 'Like bien supprimé',
+                'likes' => $likeRepo->count(['question' => $question])
+            ], 200);
+        }
+
+        $like = new QuestionLike();
+        $like->setQuestion($question)
+            ->setUser($user);
+
+        $manager->persist($like);
+        $manager->flush();
+
+        return $this->json([
+            'code' => 200,
+            'message' => 'Like bien ajouté',
+            'likes' => $likeRepo->count(['question' => $question])
+        ], 200);
     }
 }
 
