@@ -67,7 +67,7 @@ class Question
     private $slug;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\QuestionLike", mappedBy="question")
+     * @ORM\OneToMany(targetEntity="App\Entity\QuestionLike", mappedBy="question", orphanRemoval=true)
      */
     private $likes;
 

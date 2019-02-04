@@ -42,7 +42,9 @@
                 </ul>
             </div>
         </footer>
-        
+
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" charset="utf-8"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script src="{{ asset('assets/js/app.js') }}"></script>

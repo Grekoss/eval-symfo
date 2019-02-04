@@ -23,17 +23,27 @@ class ReponseController extends AbstractController
 {
 
     /**
-     * @Route("/remove/reponse/{id}", name="reponse_delete", methods="DELETE")
+     * @Route("/remove/reponse/{id}/{token}", name="reponse_delete", methods="DELETE", options={"expose"=true})
      */
-    public function delete(Request $request, Reponse $reponse) : Response
+    public function delete(Reponse $reponse, $token, ReponseRepository $reponseRepository)
     {
-        if ($this->isCsrfTokenValid('delete' . $reponse->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $reponse->getId(), $token)) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($reponse);
             $em->flush();
+
+            return $this->json([
+                'code' => 200,
+                'message' => 'Suppression de la réponse',
+                'nbReponse' => $reponseRepository->count(['question' => $reponse->getQuestion()])
+            ],200);
         }
-        
-        return $this->redirectToRoute('homepage', ['page' => 1]);
+
+        return $this->json([
+            'code' => 403,
+            'message' => 'Vous n\'avez pas les droits pour la suppression de la réponse!',
+            'nbReponse' => $reponseRepository->count(['question' => $reponse->getQuestion()])
+        ], 403);
     }
       
     /**

@@ -62,7 +62,7 @@
                 </a>
 
 
-                {{ question.reponses|length }}
+                <span class="js-span-reponses">{{ question.reponses | length }}</span>
                 {% if question.reponses | length > 1 %}
                     réponses
                 {% else %}
@@ -74,7 +74,4 @@
     </div>
 </div>
 
-{% block Javascript %}
-    <script src="{{ asset('assets/js/like.js') }}"></script>
-{% endblock %}
 

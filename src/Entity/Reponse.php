@@ -48,7 +48,7 @@ class Reponse
     private $question;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\ReponseLike", mappedBy="reponse")
+     * @ORM\OneToMany(targetEntity="App\Entity\ReponseLike", mappedBy="reponse", orphanRemoval=true)
      */
     private $likes;
 

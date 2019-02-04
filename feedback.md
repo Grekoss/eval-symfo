@@ -52,4 +52,5 @@ Félicitations pour ce travail abouti et bien conçu en amont :clap: Hormis l'AJ
 - [ ] Sécuriter sur la modification des profils
 - [ ] Commenter le CODE!
 - [ ] AJAX! Le bannissement des questions / réponses
+- [ ] Gestion dde la suppression des questions / responses des auteurs
 - [ ] Ajouter du test unitaires
