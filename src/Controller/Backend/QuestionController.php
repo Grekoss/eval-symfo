@@ -8,14 +8,11 @@ use App\Repository\QuestionRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Slugger;
-use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\ReponseRepository;
-use App\Entity\Reponse;
 
 /**
  * @Route("/backend/question")

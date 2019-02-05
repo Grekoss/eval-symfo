@@ -16,7 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Slugger;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ReponseRepository;
 use App\Form\ReponseType;
 use App\Entity\Reponse;

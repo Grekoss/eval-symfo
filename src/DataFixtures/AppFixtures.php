@@ -5,11 +5,7 @@ namespace App\DataFixtures;
 use Faker\Factory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-
-use Faker;
-
 use App\DataFixtures\Faker\MyProvider;
 use App\Service\Slugger;
 use App\Entity\Role;
@@ -22,9 +18,6 @@ class AppFixtures extends Fixture
 {
     private $encoder;
     private $slugger;
-    private $listUser = array();
-    private $listQuestion = array();
-    private $listTag = array();
 
     public function __construct(UserPasswordEncoderInterface $encoder, Slugger $slugger)
     {
@@ -42,8 +35,6 @@ class AppFixtures extends Fixture
         $generator = Factory::create('fr_FR');
 
         $generator->addProvider(new MyProvider($generator));
-
-        $populator = new Faker\ORM\Doctrine\Populator($generator, $manager);
 
         // Création des Roles
         $roleAdmin = new Role();

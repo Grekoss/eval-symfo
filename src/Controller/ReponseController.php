@@ -9,19 +9,15 @@ use App\Repository\ReponseLikeRepository;
 use App\Repository\ReponseRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Question;
 use App\Repository\QuestionRepository;
 
 
 class ReponseController extends AbstractController
 {
-
     /**
      * @Route("/remove/reponse/{id}/{token}", name="reponse_delete", methods="DELETE", options={"expose"=true})
      */

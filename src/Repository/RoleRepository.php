@@ -23,7 +23,6 @@ class RoleRepository extends ServiceEntityRepository
      * Retrouver l'ID de ROLE_USER
      * @return Role[] Returns an array of Role objects
      */
-    
     public function findRoleUser()
     {
         return $this->createQueryBuilder('r')
@@ -33,17 +32,4 @@ class RoleRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-    
-
-    /*
-    public function findOneBySomeField($value): ?Role
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

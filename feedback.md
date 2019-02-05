@@ -49,6 +49,5 @@ Félicitations pour ce travail abouti et bien conçu en amont :clap: Hormis l'AJ
 - [x] Travail sur l'AJAX, en y ajoutant le système de like pour les questions et réponse. Tout comme la suppression des réponses.
 - [x] Sécuriter sur la modification des profils, car effectivement il y avait une grosse erreur de ma part! Maintenant, on ne peut que modifier son profil!
 - [x] AJAX! Le bannissement des questions / réponses
-
-- [ ] Gérér le coté admin.
+- [x] Gérér le coté admin
 - [ ] Ajouter du test unitaires
