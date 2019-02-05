@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Entity\Reponse;
 use App\Form\ReponseType;
 use App\Repository\ReponseRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,22 +93,36 @@ class ReponseController extends AbstractController
     /**
      * @Route("/{id}/active", name="backend_reponse_active")
      */
-    public function active(Reponse $reponse, ReponseRepository $reponseRepository) : Response
+    public function active(Reponse $reponse, ObjectManager $manager) : Response
     {
+        $this->denyAccessUnlessGranted('ROLE_MODERATOR');
+
         $status = $reponse->getIsActive();
 
-        if ($status == true) {
+        if ($status ) {
             $reponse->setIsActive(false);
-        }
-        if ($status == false) {
-            $reponse->setIsActive(true);
-        }
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($reponse);
-        $em->flush();
 
-        return $this->render('backend/reponse/index.html.twig', [
-            'reponses' => $reponseRepository->findAllReponseByRecentDateAll()
-        ]); 
+            $manager->persist($reponse);
+            $manager->flush();
+
+            return $this->json([
+                'code' => 200,
+                'message' => 'La réponse a été réactivé',
+                'banish' => false,
+                'type' => 'response'
+            ],200);
+        }
+
+        $reponse->setIsActive(true);
+
+        $manager->persist($reponse);
+        $manager->flush();
+
+        return $this->json([
+            'code' => 200,
+            'message' => 'La réponse a bien été banni',
+            'banish' => true,
+            'type' => 'response'
+        ],200);
     }
 }

@@ -4,7 +4,7 @@
 
             {# Bouton pour désactiver la réponse #}
             {% if is_granted('ROLE_MODERATOR') %}
-                <a class="home-question-link-admin" href="{{ path('backend_reponse_active', {'id': reponse.id}) }}">
+                <a class="home-question-link-admin js-admin-active" href="{{ path('backend_reponse_active', {'id': reponse.id}) }}">
                     <i class="fas fa-times-circle home-question-icon-admin"></i>
                 </a>
             {% endif %}

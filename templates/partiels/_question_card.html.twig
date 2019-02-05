@@ -10,7 +10,7 @@
 
             {# Bouton pour désactiver la question #}
             {% if is_granted('ROLE_MODERATOR') %}
-                <a class="home-question-link-admin" href="{{ path('backend_question_active', {'id': question.id}) }}">
+                <a class="home-question-link-admin js-admin-active" href="{{ path('backend_question_active', {'id': question.id}) }}">
                     <i class="fas fa-times-circle home-question-icon-admin"></i>
                 </a>
             {% endif %}

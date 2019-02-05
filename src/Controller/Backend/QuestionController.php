@@ -5,6 +5,7 @@ namespace App\Controller\Backend;
 use App\Entity\Question;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -132,21 +133,37 @@ class QuestionController extends AbstractController
     /**
      * @Route("/{id}/active", name="backend_question_active")
      */
-    public function active(Question $question, QuestionRepository $questionRepository) : Response
+    public function active(Question $question, ObjectManager $manager) : Response
     {
+        $this->denyAccessUnlessGranted('ROLE_MODERATOR');
+
         $status = $question->getIsActive();
 
-        if ($status == true) {
+        if ( $status ) {
             $question->setIsActive(false);
-        }
-        if ($status == false) {
-            $question->setIsActive(true);
-        }
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($question);
-        $em->flush();
 
-        return $this->redirectToRoute('backend_question_index', ['page' => 1]);
+            $manager->persist($question);
+            $manager->flush();
+
+            return $this->json([
+                'code' => 200,
+                'message' => 'La question a bien été réactivé',
+                'banish' => false,
+                'type' => 'question'
+            ], 200);
+        }
+
+        $question->setIsActive(true);
+
+        $manager->persist($question);
+        $manager->flush();
+
+        return $this->json([
+            'code' => 200,
+            'message' => 'La question a bien été banni',
+            'banish' => true,
+            'type' => 'question'
+        ], 200);
     }
 
     /**

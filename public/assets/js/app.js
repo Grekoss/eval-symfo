@@ -8,6 +8,10 @@ var app = {
         document.querySelectorAll('a.js-delete-reponse').forEach(function (link) {
             link.addEventListener('click', app.onClickBtnDeleteReponse);
         });
+
+        document.querySelectorAll('a.js-admin-active').forEach(function (link) {
+            link.addEventListener('click', app.onClickBtnActive);
+        })
     },
 
     // => Action for like/unlike. Use "axio", switch the icon when the user click the link
@@ -18,7 +22,6 @@ var app = {
         const url = this.href;
         const spanCount = this.querySelector('span.js-likes');
         const icone = this.querySelector('i');
-        console.log(spanCount);
 
         axios
             .get(url).then(function(response) {
@@ -69,6 +72,27 @@ var app = {
                 });
         }
     },
+
+    // => Switch for active the question/response for add/remove the class "banish"
+    onClickBtnActive: function(e)
+    {
+        e.preventDefault();
+
+        const block = $(this).parent().parent().parent();
+        const url = this.href;
+
+        axios
+            .get(url).then(function(response) {
+            if (response.data.banish) {
+                block.removeClass('banish');
+            } else {
+                block.addClass('banish');
+            }
+        })
+            .catch(function() {
+                window.alert("Une erreure s'est produite, réessayez plus tard");
+            });
+    }
 };
 
 document.addEventListener('DOMContentLoaded', app.init);
