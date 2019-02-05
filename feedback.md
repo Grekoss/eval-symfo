@@ -47,8 +47,7 @@ Félicitations pour ce travail abouti et bien conçu en amont :clap: Hormis l'AJ
  
 - [x] Controller les contraintes de validations de toutes les entités.
 - [x] Travail sur l'AJAX, en y ajoutant le système de like pour les questions et réponse. Tout comme la suppression des réponses.
+- [x] Sécuriter sur la modification des profils, car effectivement il y avait une grosse erreur de ma part! Maintenant, on ne peut que modifier son profil!
 
-- [ ] Sécuriter sur la modification des profils
-- [ ] Commenter le CODE!
 - [ ] AJAX! Le bannissement des questions / réponses
 - [ ] Ajouter du test unitaires

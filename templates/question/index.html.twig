@@ -4,6 +4,14 @@
 
 {% block body %}
 
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 {% else %}
     <div class="home-presentation-container primary-2 d-flex">
