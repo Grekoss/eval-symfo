@@ -39,7 +39,7 @@
                 {# Vérifie si la personne connecté est l'auteur de la question #}
                 {% if question.author.id == app.user.id %}
                     <a href="{{ path('question_edit', {'id': question.id}) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
-                    <form method="post" class="d-inline-block" action="{{ path('question_delete', {'id': question.id}) }}" onsubmit="Etes-vous sur de vouloir supprimer cette question ?');">
+                    <form method="post" class="d-inline-block" action="{{ path('question_delete', {'id': question.id}) }}" onsubmit="return confirm('Etes-vous sur de vouloir supprimer cette question ?');">
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
                         <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>

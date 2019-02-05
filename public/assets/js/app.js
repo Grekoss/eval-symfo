@@ -10,6 +10,7 @@ var app = {
         });
     },
 
+    // => Action for like/unlike. Use "axio", switch the icon when the user click the link
     onClickBtnLike: function(e)
     {
         e.preventDefault();
@@ -38,6 +39,7 @@ var app = {
         });
     },
 
+    // => Action for Remove a Reponse. Use "axio", refresh the total of response for the question.
     onClickBtnDeleteReponse: function(e)
     {
         e.preventDefault();
@@ -48,22 +50,24 @@ var app = {
         const block = $(this).parent().parent().parent();
         const spanCountReponse = document.querySelector('.js-span-reponses');
 
-
-        axios({
-            method: 'delete',
-            url: url,
-        })
-            .then(function(response) {
-                spanCountReponse.textContent = response.data.nbReponse;
-                block.hide(1000);
+        if (confirm('Voulez-vous supprimer votre réponse ?'))
+        {
+            axios({
+                method: 'delete',
+                url: url,
             })
-            .catch(function(error) {
-                if (error.response.status === 403) {
-                    window.alert('Vous n\'avez pas les droits pour la suppression de la réponse!');
-                } else {
-                    window.alert('Une erreure s\'est produite, réessayez plus tard!');
-                }
-            });
+                .then(function(response) {
+                    spanCountReponse.textContent = response.data.nbReponse;
+                    block.hide(1000);
+                })
+                .catch(function(error) {
+                    if (error.response.status === 403) {
+                        window.alert('Vous n\'avez pas les droits pour la suppression de la réponse!');
+                    } else {
+                        window.alert('Une erreure s\'est produite, réessayez plus tard!');
+                    }
+                });
+        }
     },
 };
 
