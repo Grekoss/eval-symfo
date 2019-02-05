@@ -19,6 +19,19 @@ class QuestionLikeRepository extends ServiceEntityRepository
         parent::__construct($registry, QuestionLike::class);
     }
 
+    /**
+     * Récupération de la liste des questions liké d'un membres
+     * @return Question[] Returns an array of Question objects
+     */
+    public function findQuestionLikedByUser($user)
+    {
+        return $this->createQueryBuilder('q')
+            ->Where('q.user = :theUser')
+            ->setParameter('theUser', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     // /**
     //  * @return QuestionLike[] Returns an array of QuestionLike objects
     //  */

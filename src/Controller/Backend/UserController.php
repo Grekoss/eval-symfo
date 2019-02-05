@@ -4,7 +4,10 @@ namespace App\Controller\Backend;
 
 use App\Entity\User;
 use App\Form\UserTypeAdmin;
+use App\Repository\QuestionLikeRepository;
+use App\Repository\ReponseLikeRepository;
 use App\Repository\UserRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,33 +23,25 @@ use App\Repository\QuestionRepository;
 class UserController extends AbstractController
 {
     /**
-     * @Route("/list/{page}", name="backend_user_index", methods="GET", defaults={"page:1"})
+     * @Route("/list/", name="backend_user_index", methods="GET")
      */
-    public function index($page, UserRepository $userRepository): Response
+    public function index(UserRepository $userRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $maxUsers = '5';
-
-        $user_count = $userRepository->countTotalUserAll();
-        $users = $userRepository->findAllUserByRecentDateAll($page, $maxUsers);
-
-        $pagination = array(
-            'page' => $page,
-            'route' => 'backend_user_index',
-            'pages_count' => ceil($user_count / $maxUsers),
-            'route_params' => array()
+        $users = $paginator->paginate(
+            $userRepository->findAllUserByRecentDateAll(),
+            $request->query->getInt('page',1),
+            10
         );
 
         return $this->render('backend/user/index.html.twig', [
-            'user_count' => $user_count,
             'users' => $users,
-            'pagination' => $pagination,
             ]);
     }
 
     /**
      * @Route("/{id}", name="backend_user_show", methods="GET")
      */
-    public function show(User $user): Response
+    public function show(User $user, QuestionLikeRepository $likeRepository): Response
     {
         return $this->render('backend/user/show.html.twig', ['user' => $user]);
     }
@@ -54,7 +49,7 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}/edit", name="backend_user_edit", methods="GET|POST")
      */
-    public function edit(Request $request, User $user, UserPasswordEncoderInterface $encoder): Response
+    public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(UserTypeAdmin::class, $user);
         $form->handleRequest($request);
@@ -63,7 +58,7 @@ class UserController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('backend_user_edit', ['id' => $user->getId()]);
+            return $this->redirectToRoute('backend_user_index');
         }
 
         return $this->render('backend/user/edit.html.twig', [
@@ -75,17 +70,28 @@ class UserController extends AbstractController
     /**
      * @Route("/{id}", name="backend_user_delete", methods="DELETE")
      */
-    public function delete(Request $request, User $user, ReponseRepository $reponseRepository, QuestionRepository $questionRepository): Response
+    public function delete(Request $request, User $user, ReponseRepository $reponseRepository, QuestionRepository $questionRepository, QuestionLikeRepository $questionLikeRepository, ReponseLikeRepository $reponseLikeRepository): Response
     {
-        
         $listQuestions = $questionRepository->findQuestionByAuthor($user);
         $listReponses = $reponseRepository->findReponseByAuthor($user);
-
+        $listQuestionsLike = $questionLikeRepository->findQuestionLikedByUser($user);
+        $listReponsesLike = $reponseLikeRepository->findResponseLikedByUser($user);
         
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $em = $this->getDoctrine()->getManager();
             
-            
+            // Suppressions des likes
+            // Questions:
+            foreach ($listQuestionsLike as $like) {
+                $em->remove($like);
+                $em->flush();
+            }
+            // Réponses:
+            foreach ($listReponsesLike as $like) {
+                $em->remove($like);
+                $em->flush();
+            }
+
             // Suppression des réponses de la question de l'user
             foreach ($listReponses as $reponse) {
                 $em->remove($reponse);

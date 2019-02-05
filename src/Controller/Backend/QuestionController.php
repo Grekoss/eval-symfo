@@ -6,6 +6,7 @@ use App\Entity\Question;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
 use Doctrine\Common\Persistence\ObjectManager;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,56 +23,18 @@ use App\Entity\Reponse;
 class QuestionController extends AbstractController
 {
     /**
-     * @Route("/list/{page}", name="backend_question_index", methods="GET", defaults={"page:1"})
+     * @Route("/list/", name="backend_question_index", methods="GET")
      */
-    public function index($page, QuestionRepository $questionRepository): Response
+    public function index(QuestionRepository $questionRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $maxQuestions = '5';
-
-        $question_count = $questionRepository->countTotalQuestionAll();
-        $questions = $questionRepository->findAllQuestionByRecentDateAll($page, $maxQuestions);
-
-        $pagination = array(
-            'page' => $page,
-            'route' => 'backend_question_index',
-            'pages_count' => ceil($question_count / $maxQuestions),
-            'route_params' => array()
+        $questions = $paginator->paginate(
+            $questionRepository->findAllQuestionByRecentDateAll(true),
+            $request->query->getInt('page',1),
+            10
         );
 
         return $this->render('backend/question/index.html.twig', [
-            'question_count' => $question_count,
             'questions' => $questions,
-            'pagination' => $pagination,
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="backend_question_new", methods="GET|POST")
-     */
-    public function new(Request $request, Slugger $slugger, UserInterface $user): Response
-    {
-        
-        $question = new Question();
-        $form = $this->createForm(QuestionType::class, $question);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // On slugge le titre
-            $slug = $slugger->slugify($question->getTitle());
-            $question->setSlug($slug);
-            $question->setAuthor($user);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($question);
-            $em->flush();
-
-            return $this->redirectToRoute('backend_question_index', ['page' => 1]);
-        }
-
-        return $this->render('backend/question/new.html.twig', [
-            'question' => $question,
-            'form' => $form->createView(),
         ]);
     }
 
@@ -98,7 +61,7 @@ class QuestionController extends AbstractController
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('backend_question_edit', ['id' => $question->getId()]);
+            return $this->redirectToRoute('backend_question_index');
         }
 
         return $this->render('backend/question/edit.html.twig', [

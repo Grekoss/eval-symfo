@@ -8,10 +8,6 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ user.id }}</td>
-            </tr>
-            <tr>
                 <th>Pseudo</th>
                 <td>{{ user.username }}</td>
             </tr>
@@ -40,13 +36,17 @@
                 <td>{{ user.reponses|length }}</td>
             </tr>
             <tr>
-                <th>Votes</th>
-                <td>{{ (user.voteReponses|length) + (user.voteQuestions|length) }}</td>
+                <th>Nombre de Questions Likées</th>
+                <td>{{ (user.questionLikes|length) }}</td>
+            </tr>
+            <tr>
+                <th>Nombre de Réponses Likées</th>
+                <td>{{  (user.reponseLikes|length) }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a class="btn btn-secondary" href="{{ path('backend_user_index', {'page': 1}) }}">Retour à la liste</a>
+    <a class="btn btn-secondary" href="{{ path('backend_user_index') }}" title="Retour à la liste"><i class="fas fa-backward"></i></a>
 
     {{ include('backend/user/_delete_form.html.twig') }}
 {% endblock %}

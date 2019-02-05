@@ -19,6 +19,18 @@ class ReponseLikeRepository extends ServiceEntityRepository
         parent::__construct($registry, ReponseLike::class);
     }
 
+    /**
+     * Récupération de la liste des réponses liké d'un membres
+     * @return ReponseLike[] Return an array of Response objects
+     */
+    public function findResponseLikedByUser($user)
+    {
+        return $this->createQueryBuilder('r')
+            ->Where('r.user = :theUser')
+            ->setParameter('theUser', $user)
+            ->getQuery()
+            ->getResult();
+    }
     // /**
     //  * @return ReponseLike[] Returns an array of ReponseLike objects
     //  */

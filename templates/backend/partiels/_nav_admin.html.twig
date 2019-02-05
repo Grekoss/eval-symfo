@@ -1,9 +1,5 @@
 <nav class="nav">
-    <a class="nav-link primary-text-4" href="{{ path('backend_question_index', {'page': 1}) }}">Questions</a>
-    <a class="nav-link primary-text-4" href="{{ path('backend_reponse_index') }}">Réponses</a>
+    <a class="nav-link primary-text-4" href="{{ path('backend_question_index') }}">Questions</a>
     <a class="nav-link primary-text-4" href="{{ path('backend_tag_index') }}">Tags</a>
     <a class="nav-link primary-text-4" href="{{ path('backend_user_index', {'page': 1}) }}">Membres</a>
-    {% if is_granted('ROLE_ADMIN') %}
-        <a class="nav-link primary-text-4" href="{{ path('backend_role_index') }}">Roles</a>
-    {% endif %}
 </nav>

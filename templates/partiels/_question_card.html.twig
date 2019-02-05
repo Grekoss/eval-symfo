@@ -1,4 +1,4 @@
-<div class="home-question-container {% if question.isActive is same as(false) %}banish{% endif %}">
+<div class="home-question-container {% if question.isActive is same as(false) %}alert-danger{% endif %}">
     <div class="home-question-container-header row">
         <a class="home-question-link col-10 primary-text-1 primary-4" href="{{ path('question_show', {'slug': question.slug}) }}">
             <h2 class="home-question-title">
@@ -10,7 +10,7 @@
 
             {# Bouton pour désactiver la question #}
             {% if is_granted('ROLE_MODERATOR') %}
-                <a class="home-question-link-admin js-admin-active" href="{{ path('backend_question_active', {'id': question.id}) }}">
+                <a class="home-question-link-admin js-active" href="{{ path('backend_question_active', {'id': question.id}) }}">
                     <i class="fas fa-times-circle home-question-icon-admin"></i>
                 </a>
             {% endif %}

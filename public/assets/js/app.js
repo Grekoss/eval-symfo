@@ -9,7 +9,7 @@ var app = {
             link.addEventListener('click', app.onClickBtnDeleteReponse);
         });
 
-        document.querySelectorAll('a.js-admin-active').forEach(function (link) {
+        document.querySelectorAll('a.js-active').forEach(function (link) {
             link.addEventListener('click', app.onClickBtnActive);
         })
     },
@@ -78,15 +78,23 @@ var app = {
     {
         e.preventDefault();
 
-        const block = $(this).parent().parent().parent();
+        var block;
+
+        // For know where the action is launched
+        if ($(this).hasClass('admin')) {
+            block = $(this).parent().parent();
+        } else {
+            block = $(this).parent().parent().parent();
+        }
+
         const url = this.href;
 
         axios
             .get(url).then(function(response) {
             if (response.data.banish) {
-                block.removeClass('banish');
+                block.removeClass('alert-danger');
             } else {
-                block.addClass('banish');
+                block.addClass('alert-danger');
             }
         })
             .catch(function() {

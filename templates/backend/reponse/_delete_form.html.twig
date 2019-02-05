@@ -1,5 +1,5 @@
-<form method="post" action="{{ path('backend_reponse_delete', {'id': reponse.id}) }}" onsubmit="return confirm('Etes vous sur de vouloir supprimer cette réponse ?');">
+<form class="d-inline" method="post" action="{{ path('backend_reponse_delete', {'id': reponse.id}) }}" onsubmit="return confirm('Etes vous sur de vouloir supprimer cette réponse ?');">
     <input type="hidden" name="_method" value="DELETE">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reponse.id) }}">
-    <button class="btn btn-danger">Supprimer</button>
+    <button class="btn btn-danger" title="Supprimer la réponse"><i class="far fa-trash-alt"></i></button>
 </form>

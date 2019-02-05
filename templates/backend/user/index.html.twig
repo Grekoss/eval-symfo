@@ -9,38 +9,36 @@
     
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Pseudo</th>
+                <th style="width: 15%;">Pseudo</th>
                 <th>Email</th>
-                <th>Modifié le</th>
-                <th>Role</th>
-                <th># Questions</th>
-                <th># Réponses</th>
-                <th># Votes</th>
-                <th>Actions</th>
+                <th class="text-center" style="width: 10%;">Modifié le</th>
+                <th class="text-center" style="width: 10%;">Role</th>
+                <th class="text-center" style="width: 10%;"># Questions</th>
+                <th class="text-center" style="width: 10%;"># Réponses</th>
+                <th class="text-center" style="width: 10%;"># Likes</th>
+                <th class="text-center" style="width: 15%;">Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for user in users %}
             <tr>
-                <td>{{ user.id }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.updatedAt|date('d-m-Y à H:i') }}</td>
-                <td>{{ user.role }}</td>
-                <td>{{ user.questions|length }}</td>
-                <td>{{ user.reponses|length }}</td>
-                <td>{{ (user.voteReponses|length) + (user.voteQuestions|length) }}</td>
+                <td class="text-center">
+                    <div>{{ user.updatedAt|date('d-m-Y') }}</div>
+                    <div>{{ user.updatedAt|date('H:i') }}</div>
+                </td>
+                <td class="text-center">{{ user.role }}</td>
+                <td class="text-center">{{ user.questions|length }}</td>
+                <td class="text-center">{{ user.reponses|length }}</td>
+                <td class="text-center">{{ (user.questionLikes|length) + (user.reponseLikes|length) }}</td>
                 <td>
-                    <a class="btn btn-info" href="{{ path('backend_user_show', {'id': user.id}) }}">Voir</a>
+                    <a class="btn btn-info" href="{{ path('backend_user_show', {'id': user.id}) }}" title="Afficher la fiche du membre"><i class="far fa-eye"></i></a>
                     {% if is_granted('ROLE_ADMIN') %}
-                        <a class="btn btn-success" href="{{ path('backend_user_edit', {'id': user.id}) }}">Modifier le role</a>
+                        <a class="btn btn-success" href="{{ path('backend_user_edit', {'id': user.id}) }}" title="Modifier le rôle"><i class="far fa-edit"></i></a>
                     {% endif %}
-                    <form class="d-inline" method="post" action="{{ path('backend_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Etes-vous sur de vouloir supprimer ce membre ?');">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-                        <button class="btn btn-danger">Supprimer</button>
-                    </form>
+
+                    {{  include('backend/user/_delete_form.html.twig') }}
                 </td>
             </tr>
         {% else %}
@@ -53,21 +51,7 @@
 
     <div class="pagination-wrapper">
         <div class="pagination">
-        {% if pagination.page>1 %}
-        <a class="prev page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': 1})) }}">Prev</a>
-        <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page-1})) }}"><<a>
-        {% endif %}
-
-        {% if user_count!=0 %}
-        {% for p in range(max(pagination.page-5, 1), min(pagination.page+5, pagination.pages_count)) %}
-            <a{% if p == pagination.page %} class="page-numbers"{% endif %} class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': p})) }}">{{ p }}</a>
-        {% endfor %}
-        {% endif %}
-
-        {% if pagination.page<pagination.pages_count %}
-        <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page+1})) }}">></a>
-        <a class="next page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.pages_count})) }}">Next</a>
-        {% endif %}
+            {{ knp_pagination_render(users) }}
         </div>
     </div>
 

@@ -21,10 +21,16 @@ class TagType extends AbstractType
                 ]
             ))
             ->add('backgroundColor', ColorType::class, array(
-                'label' => 'Choisir la couleur de Fond'
+                'label' => 'Choisir la couleur de Fond',
+                'attr' => [
+                    'style' => 'height: 50px;'
+                ]
             ))
             ->add('textColor', ColorType::class, array(
-                'label' => 'Choisir la couleur du Texte'
+                'label' => 'Choisir la couleur du Texte',
+                'attr' => [
+                    'style' => 'height: 50px;'
+                ]
             ))
         ;
     }

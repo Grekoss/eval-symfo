@@ -7,7 +7,7 @@
 
     {{ include('backend/reponse/_form.html.twig', {'button_label': 'Modifier'}) }}
 
-    <a class="btn btn-secondary" href="{{ path('backend_reponse_index') }}">Retour à la liste</a>
+    <a class="btn btn-secondary" href="javascript:history.back();"><i class="fas fa-backward"></i></a>
 
     {{ include('backend/reponse/_delete_form.html.twig') }}
 {% endblock %}

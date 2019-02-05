@@ -18,45 +18,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class ReponseController extends AbstractController
 {
     /**
-     * @Route("/", name="backend_reponse_index", methods="GET")
-     */
-    public function index(ReponseRepository $reponseRepository): Response
-    {
-        return $this->render('backend/reponse/index.html.twig', ['reponses' => $reponseRepository->findAllReponseByRecentDateAll()]);
-    }
-
-    /**
-     * @Route("/new", name="backend_reponse_new", methods="GET|POST")
-     */
-    public function new(Request $request): Response
-    {
-        $reponse = new Reponse();
-        $form = $this->createForm(ReponseType::class, $reponse);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($reponse);
-            $em->flush();
-
-            return $this->redirectToRoute('backend_reponse_index');
-        }
-
-        return $this->render('backend/reponse/new.html.twig', [
-            'reponse' => $reponse,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="backend_reponse_show", methods="GET")
-     */
-    public function show(Reponse $reponse): Response
-    {
-        return $this->render('backend/reponse/show.html.twig', ['reponse' => $reponse]);
-    }
-
-    /**
      * @Route("/{id}/edit", name="backend_reponse_edit", methods="GET|POST")
      */
     public function edit(Request $request, Reponse $reponse): Response
@@ -67,7 +28,7 @@ class ReponseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('backend_reponse_edit', ['id' => $reponse->getId()]);
+            return $this->redirectToRoute('backend_question_listReponse', ['id' => $reponse->getQuestion()->getId()]);
         }
 
         return $this->render('backend/reponse/edit.html.twig', [
@@ -87,7 +48,8 @@ class ReponseController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('backend_reponse_index');
+        return $this->redirectToRoute('backend_question_listReponse', ['id' => $reponse->getQuestion()->getId()
+        ]);
     }
 
     /**
