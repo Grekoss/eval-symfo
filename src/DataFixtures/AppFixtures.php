@@ -33,6 +33,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager)
     {
         $generator = Factory::create('fr_FR');
+        $generator->seed(1985);
 
         $generator->addProvider(new MyProvider($generator));
 

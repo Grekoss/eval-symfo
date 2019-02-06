@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+// The Service for make a slug make by me.
 class Slugger
 {
     // hyphen = tiret
