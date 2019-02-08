@@ -24,7 +24,7 @@ class ApplicationAvailabilityFunctionTest extends WebTestCase
         yield ['/login'];
         yield ['/search'];
         yield ['/search/tag/histoire'];
-//        yield ['/question/situpouvaischangerunechosechez'];
+        yield ['/question/estcequetaimesquandonteditunco'];
     }
 
     /**
@@ -45,13 +45,13 @@ class ApplicationAvailabilityFunctionTest extends WebTestCase
     {
         yield ['/new/question'];
         yield ['/register'];
-//        yield ['/reponse/23/vote'];
-//        yield ['/search/author/5'];
-//        yield ['/profil/3/edit'];
+        yield ['/reponse/23/vote'];
+        yield ['/search/author/5'];
+        yield ['/profil/3/edit'];
         yield ['/profil/3/question'];
         yield ['/profil/3/reponse'];
-//        yield ['/question/2/edit'];
-//        yield ['/question/15/like'];
+        yield ['/question/2/edit'];
+        yield ['/question/15/like'];
     }
 
     /**
@@ -71,18 +71,18 @@ class ApplicationAvailabilityFunctionTest extends WebTestCase
     public function urlProviderModerator()
     {
         yield ['/backend/question/list/'];
-//        yield ['/backend/question/5'];
-//        yield ['/backend/question/6/edit'];
-//        yield ['/backend/question/7/active'];
-//        yield ['/backend/question/2/reponses'];
+        yield ['/backend/question/5'];
+        yield ['/backend/question/6/edit'];
+        yield ['/backend/question/7/active'];
+        yield ['/backend/question/2/reponses'];
         yield ['/backend/user/list/'];
-//        yield ['/backend/user/15'];
-//        yield ['/backend/user/20/edit'];
+        yield ['/backend/user/15'];
+        yield ['/backend/user/20/edit'];
         yield ['/backend/tag/'];
         yield ['/backend/tag/new'];
-//        yield ['/backend/tag/8'];
-//        yield ['/backend/tag/1/edit'];
-//        yield ['/backend/reponse/12/edit'];
-//        yield ['/backend/reponse/10/active'];
+        yield ['/backend/tag/8'];
+        yield ['/backend/tag/1/edit'];
+        yield ['/backend/reponse/12/edit'];
+        yield ['/backend/reponse/10/active'];
     }
 }

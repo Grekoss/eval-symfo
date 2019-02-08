@@ -28,9 +28,15 @@
                 </div>
 
                 {% if is_granted('ROLE_USER') %}
-                    <div class="home-question-vote">{{ question.reponseValid.likes|length }}
-                        <a class="home-question-link primary-text-0" href="{{ path('vote_reponse', {'id': reponse.id}) }}">
-                            <i class="fas fa-thumbs-up home-question-icon"></i>
+                    <div class="home-question-vote">
+                        <a href="{{ path('reponse_like', {'id': question.reponseValid.id}) }}" class="btn btn-link js-like">
+                            {% if app.user and question.reponseValid.isReponseLikedByUser(app.user) %}
+                                <i class="fas fa-thumbs-up"></i>
+                            {% else %}
+                                <i class="far fa-thumbs-up"></i>
+                            {% endif %}
+                            <span class="js-likes">{{ question.reponseValid.likes | length }}</span>
+                            <span class="js-label">J'aime</span>
                         </a>
                     </div>
                 {% endif %}
