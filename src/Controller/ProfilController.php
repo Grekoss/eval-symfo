@@ -63,63 +63,57 @@ class ProfilController extends AbstractController
     /**
      * @Route("/profil/{id}/edit", name="user_edit", methods="GET|POST")
      */
-    public function profil (Request $request, User $user, UserPasswordEncoderInterface $encoder): Response
+    public function edit (Request $request, User $user, UserPasswordEncoderInterface $encoder, UserInterface $userInterface): Response
     {
-        if ($this->getUser() === $user)
-        {
-            // On stock le mot de passe courrant
-            $currentPassword = $user->getPassword();
-            // Et on le passe à vide
-            $user->setPassword('');
-            $user->setPasswordConfirm('');
-
-            $form = $this->createForm(UserType::class, $user);
-            $form->handleRequest($request);
-
-            if ($form->isSubmitted()) {
-
-                // On verifie si les mots de passe sont identiques
-                if ($user->getPassword() != $user->getPasswordConfirm()) {
-                    $this->addFlash(
-                        'danger',
-                        'La confirmation de votre mot de passe a échoué'
-                    );
-                } else if ($form->isValid()) {
-                    // On compare le nouveau (form) et l'ancien (current)
-                    if(empty($user->getPassword())) {
-                        // Si c'est le même ne fait rien
-                        $user->setPassword($currentPassword);
-                        $user->setPasswordConfirm($currentPassword);
-                    } else {
-                        // On encode le mot de passe
-                        $passwordEncoded = $encoder->encodePassword($user, $user->getPassword());
-                        $passwordConfirmEncoded = $encoder->encodePassword($user, $user->getPasswordConfirm());
-                        $user->setPassword($passwordEncoded);
-                        $user->setPasswordConfirm($passwordConfirmEncoded);
-                    }
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($user);
-                    $em->flush();
-
-                    return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
-                }
-
-            }
-
-            return $this->render('profil/profil.html.twig', [
-                'user' => $user,
-                'form' => $form->createView(),
-            ]);
-        }
-        else
-        {
-            $this->addFlash(
-                'danger',
-                'Vous ne pouvez que modifier votre profil!!!'
-            );
+        if ($user !== $userInterface) {
+            $this->addFlash('danger', 'Vous n\'avez pas accès à la modification de se compte');
 
             return $this->redirectToRoute('homepage');
         }
+        // On stock le mot de passe courrant
+        $currentPassword = $user->getPassword();
+        // Et on le passe à vide
+        $user->setPassword('');
+        $user->setPasswordConfirm('');
+
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+
+            // On verifie si les mots de passe sont identiques
+            if ($user->getPassword() != $user->getPasswordConfirm()) {
+                $this->addFlash(
+                    'danger',
+                    'La confirmation de votre mot de passe a échoué'
+                );
+            } else if ($form->isValid()) {
+                // On compare le nouveau (form) et l'ancien (current)
+                if(empty($user->getPassword())) {
+                    // Si c'est le même ne fait rien
+                    $user->setPassword($currentPassword);
+                    $user->setPasswordConfirm($currentPassword);
+                } else {
+                    // On encode le mot de passe
+                    $passwordEncoded = $encoder->encodePassword($user, $user->getPassword());
+                    $passwordConfirmEncoded = $encoder->encodePassword($user, $user->getPasswordConfirm());
+                    $user->setPassword($passwordEncoded);
+                    $user->setPasswordConfirm($passwordConfirmEncoded);
+                }
+
+                $em = $this->getDoctrine()->getManager();
+               // $em->persist($user);
+                $em->flush();
+
+                $this->addFlash('success', 'Les modifications sont bien enregistrées!');
+            }
+
+        }
+
+        return $this->render('profil/profil.html.twig', [
+            'user' => $user,
+            'form' => $form->createView(),
+        ]);
 
     }
 

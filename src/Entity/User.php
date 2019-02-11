@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use phpDocumentor\Reflection\Types\Self_;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,7 +23,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *     message="Cet email est déjà utilisé"
  * )
  */
-class User implements UserInterface, \Serializable
+class User implements UserInterface, EquatableInterface, \Serializable
 {
     /**
      * @ORM\Column(type="integer")
@@ -364,5 +366,22 @@ class User implements UserInterface, \Serializable
         }
 
         return $this;
+    }
+
+    /**
+     * Returns whether the current user is up-to-date or requires re-authentication.
+     *
+     */
+    public function isEqualTo(UserInterface $user) : bool
+    {
+        if (!$user instanceof Self) {
+            return false;
+        }
+
+        if ($this->getId() !== $user->getId()) {
+            return false;
+        }
+
+        return true;
     }
 }
