@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ReponseRepository")
@@ -25,6 +26,7 @@ class Reponse
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank(message="Il faut une réponse")
      */
     private $body;
 
@@ -46,16 +48,16 @@ class Reponse
     private $question;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="voteReponses", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\ReponseLike", mappedBy="reponse", orphanRemoval=true)
      */
-    private $vote;
+    private $likes;
 
     public function __construct()
     {
         // Ajout automatique de la date pour la création et update(1ere modif = création)
         $this->createdAt = new \DateTime();
         $this->isActive = true;
-        $this->vote = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function __toString()
@@ -129,28 +131,49 @@ class Reponse
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|ReponseLike[]
      */
-    public function getVote(): Collection
+    public function getLikes(): Collection
     {
-        return $this->vote;
+        return $this->likes;
     }
 
-    public function addVote(User $vote): self
+    public function addLike(ReponseLike $like): self
     {
-        if (!$this->vote->contains($vote)) {
-            $this->vote[] = $vote;
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setReponse($this);
         }
 
         return $this;
     }
 
-    public function removeVote(User $vote): self
+    public function removeLike(ReponseLike $like): self
     {
-        if ($this->vote->contains($vote)) {
-            $this->vote->removeElement($vote);
+        if ($this->likes->contains($like)) {
+            $this->likes->removeElement($like);
+            // set the owning side to null (unless already changed)
+            if ($like->getReponse() === $this) {
+                $like->setReponse(null);
+            }
         }
 
         return $this;
     }
+
+    /**
+     * Permet de savoir si cette Réponse est "liké" par un utilisateur
+     *
+     * @param User $user
+     * @return boolean
+     */
+    public function isReponseLikedByUser(User $user): bool
+    {
+        foreach ($this->likes as $like) {
+            if ($like->getUser() === $user) return true;
+        }
+
+        return false;
+    }
+
 }

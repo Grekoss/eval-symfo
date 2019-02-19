@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -14,7 +14,7 @@ use App\Repository\QuestionRepository;
 use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\ReponseRepository;
 
-class ProfilController extends Controller
+class ProfilController extends AbstractController
 {
     /**
      * @Route("/register", name="register")
@@ -63,8 +63,13 @@ class ProfilController extends Controller
     /**
      * @Route("/profil/{id}/edit", name="user_edit", methods="GET|POST")
      */
-    public function profil (Request $request, User $user, UserPasswordEncoderInterface $encoder): Response
+    public function edit (Request $request, User $user, UserPasswordEncoderInterface $encoder, UserInterface $userInterface): Response
     {
+        if ($user !== $userInterface) {
+            $this->addFlash('danger', 'Vous n\'avez pas accès à la modification de se compte');
+
+            return $this->redirectToRoute('homepage');
+        }
         // On stock le mot de passe courrant
         $currentPassword = $user->getPassword();
         // Et on le passe à vide
@@ -95,19 +100,21 @@ class ProfilController extends Controller
                     $user->setPassword($passwordEncoded);
                     $user->setPasswordConfirm($passwordConfirmEncoded);
                 }
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($user);
-                    $em->flush();
 
-                    return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
+                $em = $this->getDoctrine()->getManager();
+               // $em->persist($user);
+                $em->flush();
+
+                $this->addFlash('success', 'Les modifications sont bien enregistrées!');
             }
-            
+
         }
 
         return $this->render('profil/profil.html.twig', [
             'user' => $user,
             'form' => $form->createView(),
         ]);
+
     }
 
     /**

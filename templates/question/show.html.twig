@@ -28,9 +28,15 @@
                 </div>
 
                 {% if is_granted('ROLE_USER') %}
-                    <div class="home-question-vote">{{ question.reponseValid.vote|length }}
-                        <a class="home-question-link primary-text-0" href="{{ path('vote_reponse', {'id': reponse.id}) }}">
-                            <i class="fas fa-thumbs-up home-question-icon"></i>
+                    <div class="home-question-vote">
+                        <a href="{{ path('reponse_like', {'id': question.reponseValid.id}) }}" class="btn btn-link js-like">
+                            {% if app.user and question.reponseValid.isReponseLikedByUser(app.user) %}
+                                <i class="fas fa-thumbs-up"></i>
+                            {% else %}
+                                <i class="far fa-thumbs-up"></i>
+                            {% endif %}
+                            <span class="js-likes">{{ question.reponseValid.likes | length }}</span>
+                            <span class="js-label">J'aime</span>
                         </a>
                     </div>
                 {% endif %}
@@ -41,7 +47,7 @@
 {% endif %}
 
 {# Zone des réponses #}
-<div class="home-questions-container">
+<div id="reponses" class="home-questions-container">
 
     {% if reponses | length > 1 %}
         <h2 class="show-reponses-title primary-text-0">{{ question.reponses|length }} - Réponses à la question :</h2>
@@ -49,14 +55,14 @@
         <h2 class="show-reponses-title primary-text-0">{{ question.reponses|length }} - Réponse à la question :</h2>
     {% endif %}
 
-{% for reponse in reponses %}
-    {% include 'partiels/_reponse_card.html.twig' %}
-{% endfor %}
+    {% for reponse in reponses %}
+        {% include 'partiels/_reponse_card.html.twig' %}
+    {% endfor %}
 
-{# Zone pour répondre si on est membre #}
-{% if is_granted('ROLE_USER') %}
-    {{ include('question/_form_reponse.html.twig') }}
-{% endif %}
+    {# Zone pour répondre si on est membre #}
+    {% if is_granted('ROLE_USER') %}
+        {{ include('question/_form_reponse.html.twig') }}
+    {% endif %}
 
 </div>
 

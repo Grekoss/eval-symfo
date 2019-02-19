@@ -3,10 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="app_role")
  * @ORM\Entity(repositoryClass="App\Repository\RoleRepository")
+ * @UniqueEntity("name")
  */
 class Role
 {
@@ -19,11 +22,13 @@ class Role
 
     /**
      * @ORM\Column(type="string", length=25)
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $label;
 

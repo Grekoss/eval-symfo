@@ -5,71 +5,33 @@ namespace App\Controller\Backend;
 use App\Entity\Question;
 use App\Form\QuestionType;
 use App\Repository\QuestionRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Doctrine\Common\Persistence\ObjectManager;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Slugger;
-use Symfony\Component\Security\Core\User\UserInterface;
 use App\Repository\ReponseRepository;
-use App\Entity\Reponse;
 
 /**
  * @Route("/backend/question")
  */
-class QuestionController extends Controller
+class QuestionController extends AbstractController
 {
     /**
-     * @Route("/list/{page}", name="backend_question_index", methods="GET", defaults={"page:1"})
+     * @Route("/list/", name="backend_question_index", methods="GET")
      */
-    public function index($page, QuestionRepository $questionRepository): Response
+    public function index(QuestionRepository $questionRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $maxQuestions = '5';
-
-        $question_count = $questionRepository->countTotalQuestionAll();
-        $questions = $questionRepository->findAllQuestionByRecentDateAll($page, $maxQuestions);
-
-        $pagination = array(
-            'page' => $page,
-            'route' => 'backend_question_index',
-            'pages_count' => ceil($question_count / $maxQuestions),
-            'route_params' => array()
+        $questions = $paginator->paginate(
+            $questionRepository->findAllQuestionByRecentDateAll(true),
+            $request->query->getInt('page',1),
+            10
         );
 
         return $this->render('backend/question/index.html.twig', [
-            'question_count' => $question_count,
             'questions' => $questions,
-            'pagination' => $pagination,
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="backend_question_new", methods="GET|POST")
-     */
-    public function new(Request $request, Slugger $slugger, UserInterface $user): Response
-    {
-        
-        $question = new Question();
-        $form = $this->createForm(QuestionType::class, $question);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // On slugge le titre
-            $slug = $slugger->slugify($question->getTitle());
-            $question->setSlug($slug);
-            $question->setAuthor($user);
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($question);
-            $em->flush();
-
-            return $this->redirectToRoute('backend_question_index', ['page' => 1]);
-        }
-
-        return $this->render('backend/question/new.html.twig', [
-            'question' => $question,
-            'form' => $form->createView(),
         ]);
     }
 
@@ -96,7 +58,7 @@ class QuestionController extends Controller
 
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('backend_question_edit', ['id' => $question->getId()]);
+            return $this->redirectToRoute('backend_question_index');
         }
 
         return $this->render('backend/question/edit.html.twig', [
@@ -131,21 +93,37 @@ class QuestionController extends Controller
     /**
      * @Route("/{id}/active", name="backend_question_active")
      */
-    public function active(Question $question, QuestionRepository $questionRepository) : Response
+    public function active(Question $question, ObjectManager $manager) : Response
     {
+        $this->denyAccessUnlessGranted('ROLE_MODERATOR');
+
         $status = $question->getIsActive();
 
-        if ($status == true) {
+        if ( $status ) {
             $question->setIsActive(false);
-        }
-        if ($status == false) {
-            $question->setIsActive(true);
-        }
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($question);
-        $em->flush();
 
-        return $this->redirectToRoute('backend_question_index', ['page' => 1]);
+            $manager->persist($question);
+            $manager->flush();
+
+            return $this->json([
+                'code' => 200,
+                'message' => 'La question a bien été réactivé',
+                'banish' => false,
+                'type' => 'question'
+            ], 200);
+        }
+
+        $question->setIsActive(true);
+
+        $manager->persist($question);
+        $manager->flush();
+
+        return $this->json([
+            'code' => 200,
+            'message' => 'La question a bien été banni',
+            'banish' => true,
+            'type' => 'question'
+        ], 200);
     }
 
     /**

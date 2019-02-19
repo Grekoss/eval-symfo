@@ -40,3 +40,14 @@ Félicitations pour ce travail abouti et bien conçu en amont :clap: Hormis l'AJ
 - Ajouter des tests fonctionnels pour bien couvrir l'application (cas de certains accès pour un user qui bug en anonyme - erreurs non gérées)
 - Sur une appli plus "pro", ne pas hésiter à utiliser des thèmes graphiques existants (pas demandé ici)
 - Je note l'effort des nommages en anglais, tu peux persévérer ;)
+
+### Corrections
+
+- [x] Modification de la pagination de la homepage avec une meilleur utilisation a mon goût du bundle de `knp_paginator`. Egalement rajout d'un `background-color` lorsqu'un modérateur banni des questions.
+ 
+- [x] Controller les contraintes de validations de toutes les entités.
+- [x] Travail sur l'AJAX, en y ajoutant le système de like pour les questions et réponse. Tout comme la suppression des réponses.
+- [x] Sécuriter sur la modification des profils, car effectivement il y avait une grosse erreur de ma part! Maintenant, on ne peut que modifier son profil!
+- [x] AJAX! Le bannissement des questions / réponses
+- [x] Gérér le coté admin
+- [ ] Ajouter du test unitaires

@@ -1,4 +1,4 @@
-<div class="home-question-container">
+<div class="home-question-container {% if question.isActive is same as(false) %}alert-danger{% endif %}">
     <div class="home-question-container-header row">
         <a class="home-question-link col-10 primary-text-1 primary-4" href="{{ path('question_show', {'slug': question.slug}) }}">
             <h2 class="home-question-title">
@@ -10,7 +10,7 @@
 
             {# Bouton pour désactiver la question #}
             {% if is_granted('ROLE_MODERATOR') %}
-                <a class="home-question-link-admin" href="{{ path('backend_question_active', {'id': question.id}) }}">
+                <a class="home-question-link-admin js-active" href="{{ path('backend_question_active', {'id': question.id}) }}">
                     <i class="fas fa-times-circle home-question-icon-admin"></i>
                 </a>
             {% endif %}
@@ -39,7 +39,7 @@
                 {# Vérifie si la personne connecté est l'auteur de la question #}
                 {% if question.author.id == app.user.id %}
                     <a href="{{ path('question_edit', {'id': question.id}) }}" class="btn btn-success"><i class="fas fa-edit"></i></a>
-                    <form method="post" class="d-inline-block" action="{{ path('question_delete', {'id': question.id}) }}" onsubmit="Etes-vous sur de vouloir supprimer cette question ?');">
+                    <form method="post" class="d-inline-block" action="{{ path('question_delete', {'id': question.id}) }}" onsubmit="return confirm('Etes-vous sur de vouloir supprimer cette question ?');">
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
                         <button class="btn btn-danger"><i class="fas fa-trash-alt"></i></button>
@@ -51,13 +51,18 @@
         </div>
         <div class="home-question-container-footer-secondary">
             <div class="home-question-vote">
+                <a href="{{ path('question_like', {'id': question.id}) }}" class="btn btn-link js-like">
+                    {% if app.user and question.isQuestionLikedByUser(app.user) %}
+                        <i class="fas fa-thumbs-up"></i>
+                    {% else %}
+                        <i class="far fa-thumbs-up"></i>
+                    {% endif %}
+                    <span class="js-likes">{{ question.likes | length }}</span>
+                    <span class="js-label">J'aime</span>
+                </a>
 
-            {% if is_granted('ROLE_USER') %}
-                {{ question.vote|length }}
-                <a class="home-question-link primary-text-0" href="{{ path('vote_question', {'id': question.id}) }}"><i class="fas fa-thumbs-up home-question-icon "></i></a>
-            {% endif %}
 
-                {{ question.reponses|length }}
+                <span class="js-span-reponses">{{ question.reponses | length }}</span>
                 {% if question.reponses | length > 1 %}
                     réponses
                 {% else %}
@@ -68,3 +73,5 @@
         </div>
     </div>
 </div>
+
+

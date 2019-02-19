@@ -6,7 +6,7 @@
     <h1 class="backend-title primary-0 primary-text-4">{{ question.title|capitalize }}</h1>
 
     <table class="table">
-        <tbody class={{ question.isActive ? "" : "alert-danger" }}>
+        <tbody class={% if question.isActive is same as(false) %}"alert-danger"{% endif %}>
             <tr>
                 <th>Id</th>
                 <td>{{ question.id }}</td>
@@ -24,8 +24,14 @@
                 <td>{{ question.author|capitalize }}</td>
             </tr>
             <tr>
-                <th>Nombre de vote</th>
-                <td>{{ question.vote|length }}</td>
+                <th>Nombre de Link(s)</th>
+                <td>
+                    <a class="btn-link" href="{{ path('backend_question_listReponse', {'id': question.id}) }}" title="Voir la liste des réponses">{{ question.reponses|length }}</a>
+                </td>
+            </tr>
+            <tr>
+                <th>Nombre de réponse(s)</th>
+                <td>{{ question.reponses|length }}</td>
             </tr>
             <tr>
                 <th>Tags</th>
@@ -39,10 +45,9 @@
         </tbody>
     </table>
 
-    <a class="btn btn-secondary" href="{{ path('backend_question_index', {'page': 1}) }}">Retour à la liste</a>
-
-    <a class="btn btn-success" href="{{ path('backend_question_edit', {'id': question.id}) }}">Modifier</a>
-    <a class="btn btn-warning" href="{{ path('backend_question_active', {'id': question.id}) }}">Dé/Activer</a>
+    <a class="btn btn-secondary" href="{{ path('backend_question_index', {'page': 1}) }}" title="Retour à la liste"><i class="fas fa-backward"></i></a>
+    <a class="btn btn-success" href="{{ path('backend_question_edit', {'id': question.id}) }} " title="Modifier la question"><i class="far fa-edit"></i></a>
+    <a class="btn btn-warning" href="{{ path('backend_question_active', {'id': question.id}) }}" title="Activer / Désactiver la question"><i class="fas fa-exclamation-triangle"></i></a>
 
     {{ include('backend/question/_delete_form.html.twig') }}
 {% endblock %}

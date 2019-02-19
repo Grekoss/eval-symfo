@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\QuestionRepository")
@@ -20,6 +21,11 @@ class Question
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Saisir une question")
+     * @Assert\Length(
+     *     max = 255,
+     *     maxMessage="Ce n'est pas un roman, mais une question !"
+     * )
      */
     private $title;
 
@@ -60,9 +66,9 @@ class Question
     private $slug;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", inversedBy="voteQuestions", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\QuestionLike", mappedBy="question", orphanRemoval=true)
      */
-    private $vote;
+    private $likes;
 
     public function __construct()
     {
@@ -72,7 +78,7 @@ class Question
         $this->isActive = true;
         $this->tags = new ArrayCollection();
         $this->reponses = new ArrayCollection();
-        $this->vote = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function __toString()
@@ -215,28 +221,49 @@ class Question
     }
 
     /**
-     * @return Collection|User[]
+     * @return Collection|QuestionLike[]
      */
-    public function getVote(): Collection
+    public function getLikes(): Collection
     {
-        return $this->vote;
+        return $this->likes;
     }
 
-    public function addVote(User $vote): self
+    public function addLike(QuestionLike $like): self
     {
-        if (!$this->vote->contains($vote)) {
-            $this->vote[] = $vote;
+        if (!$this->likes->contains($like)) {
+            $this->likes[] = $like;
+            $like->setQuestion($this);
         }
 
         return $this;
     }
 
-    public function removeVote(User $vote): self
+    public function removeLike(QuestionLike $like): self
     {
-        if ($this->vote->contains($vote)) {
-            $this->vote->removeElement($vote);
+        if ($this->likes->contains($like)) {
+            $this->likes->removeElement($like);
+            // set the owning side to null (unless already changed)
+            if ($like->getQuestion() === $this) {
+                $like->setQuestion(null);
+            }
         }
 
         return $this;
     }
+
+    /**
+     * Permet de savoir si cette question est "liké" par un utilisateur
+     *
+     * @param User $user
+     * @return boolean
+     */
+    public function isQuestionLikedByUser(User $user): bool
+    {
+        foreach ($this->likes as $like) {
+            if ($like->getUser() === $user) return true;
+        }
+
+        return false;
+    }
+
 }

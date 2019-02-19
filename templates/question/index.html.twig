@@ -4,12 +4,20 @@
 
 {% block body %}
 
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} text-center">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
 {% else %}
     <div class="home-presentation-container primary-2 d-flex">
         <img class="home-presentation-image col-3" src="{{ asset('assets/images/enfant_question.png') }}" alt="Un enfant lève le doigt pour une question">
         <div class="home-presentation-container-secondary col">
-            <h1 class="home-presentation-title primary-text-4">FAQ - O'Clock</h1>
+            <h1 class="home-presentation-title primary-text-4">FAQ - O'clock</h1>
             <div class="home-presentation-container-description primary-text-4">
                 <p class="home-presentation-description">Tu as des questions, mais tu es sans réponses ?</p>
                 <p class="home-presentation-description">Alors viens poser tes questions ici en t’inscrivant et la communautée viendra t’aider en t’apportant des réponses.</p>
@@ -22,7 +30,7 @@
 
 {# Zone des Questions #}
     
-<div class="home-questions-container">
+<div id="container-questions-index" class="home-questions-container">
 
 {% for question in questions %}
     {% include 'partiels/_question_card.html.twig' %}
@@ -32,21 +40,7 @@
 
 <div class="pagination-wrapper">
     <div class="pagination">
-    {% if pagination.page>1 %}
-       <a class="prev page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': 1})) }}">Prev</a>
-       <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page-1})) }}"><<a>
-    {% endif %}
-
-    {% if question_count!=0 %}
-       {% for p in range(max(pagination.page-2, 1), min(pagination.page+2, pagination.pages_count)) %}
-          <a{% if p == pagination.page %} class="page-numbers"{% endif %} class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': p})) }}">{{ p }}</a>
-       {% endfor %}
-    {% endif %}
-
-    {% if pagination.page<pagination.pages_count %}
-       <a class="page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.page+1})) }}">></a>
-       <a class="next page-numbers" href="{{ path(pagination.route, pagination.route_params|merge({'page': pagination.pages_count})) }}">Next</a>
-    {% endif %}
+        {{ knp_pagination_render(questions) }}
     </div>
 </div>
 

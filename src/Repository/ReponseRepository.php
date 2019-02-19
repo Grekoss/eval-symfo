@@ -36,7 +36,6 @@ class ReponseRepository extends ServiceEntityRepository
      * avec l'option active pour la visu des membres
      * @return Reponse[] Returns an array of Reponse objects
      */
-    
     public function findAllReponseByQuestion($question)
     {
         $query = $this->createQueryBuilder('r')
@@ -52,7 +51,6 @@ class ReponseRepository extends ServiceEntityRepository
      * Récupérer la liste des réponses en fonction de la question pour Modérateur
      * @return Reponse[] Returns an array of Reponse objects
      */
-
     public function findAllReponseByQuestionAll($question)
     {
         $query = $this->createQueryBuilder('r')
@@ -68,7 +66,6 @@ class ReponseRepository extends ServiceEntityRepository
      * (Verion PMA : "SELECT r .* , q . title FROM reponse r LEFT JOIN question q ON q . id = r . question_id WHERE r . author_id = 1188" )
      * @return Reponse[] Returns an array of Reponse objects
      */
-
     public function findReponseByAuthor($idAuthor)
     {
         return $this->createQueryBuilder('r')

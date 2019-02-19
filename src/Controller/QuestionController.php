@@ -3,51 +3,54 @@
 namespace App\Controller;
 
 use App\Entity\Question;
+use App\Entity\QuestionLike;
 use App\Form\QuestionType;
+use App\Repository\QuestionLikeRepository;
 use App\Repository\QuestionRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Doctrine\Common\Persistence\ObjectManager;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Slugger;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ReponseRepository;
 use App\Form\ReponseType;
 use App\Entity\Reponse;
 
 
-class QuestionController extends Controller
+class QuestionController extends AbstractController
 {
-    /**
-     * @Route("/", name="home")
-     */
-    public function home()
+    private $repository;
+    private $em;
+
+    public function __construct(QuestionRepository $repository, ObjectManager $em)
     {
-        return $this->redirectToRoute('homepage', ['page' => 1]);
+        $this->repository = $repository;
+        $this->em = $em;
     }
 
     /**
-     * @Route("/{page}/", name="homepage", defaults={"page:1"})
+     * @Route("/", name="homepage")
      */
-    public function index($page, QuestionRepository $questionRepository)
-    { 
-        $maxQuestions = '7';
+    public function home(PaginatorInterface $paginator, AuthorizationCheckerInterface $authorizationChecker, Request $request)
+    {
+        //Vérification si visiteur ou simple utilisateur
+        $admin = false;
+        if ( true === $authorizationChecker->isGranted('ROLE_MODERATOR')) {
+            $admin = true;
+        }
 
-        $question_count = $questionRepository->countTotalQuestion();
-        $questions = $questionRepository->findAllQuestionByRecentDatePage($page, $maxQuestions);
-
-        $pagination = array(
-            'page' => $page,
-            'route' => 'homepage',
-            'pages_count' => ceil($question_count / $maxQuestions),
-            'route_params' => array()
+        $questions = $paginator->paginate(
+            $this->repository->findAllQuestionByRecentDateAll($admin),
+            $request->query->getInt('page', 1),
+            7
         );
 
         return $this->render('question/index.html.twig', [
-            'question_count' => $question_count,
             'questions' => $questions,
-            'pagination' => $pagination,
         ]);
     }
 
@@ -165,18 +168,52 @@ class QuestionController extends Controller
     }
 
     /**
-     * @Route("/question/{id}/vote", name="vote_question")
+     * Permet de liker ou unliker une question
+     *
+     * @Route("/question/{id}/like", name="question_like")
+     *
+     * @param Question $question
+     * @param ObjectManager $manager
+     * @param QuestionLikeRepository $likeRepo
+     * @return Response
      */
-    public function voteReponse(Question $question, Request $request, QuestionRepository $questionRepository, UserInterface $user) : Response
+    public function likeQuestion(Question $question, ObjectManager $manager, QuestionLikeRepository $likeRepo) : Response
     {
-        
-        // On sauvegarder l'user   => pourquoi l'user et pas +1? comme ça l'user ne peux voter qu'une fois la réponse et pas "tricher"
-        $question->addVote($user);
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($question);
-        $em->flush();
+        $user = $this->getUser();
 
-        return $this->redirectToRoute('homepage', ['page' => 1]);
+        if(!$user) return $this->json([
+            'code' => 403,
+            'message' => 'Unauthorized'
+        ], 403);
+
+        if($question->isQuestionLikedByUser($user)) {
+            $like = $likeRepo->findOneBy([
+                'question' => $question,
+                'user' => $user
+            ]);
+
+            $manager->remove($like);
+            $manager->flush();
+
+            return $this->json([
+                'code' => 200,
+                'message' => 'Like bien supprimé',
+                'likes' => $likeRepo->count(['question' => $question])
+            ], 200);
+        }
+
+        $like = new QuestionLike();
+        $like->setQuestion($question)
+            ->setUser($user);
+
+        $manager->persist($like);
+        $manager->flush();
+
+        return $this->json([
+            'code' => 200,
+            'message' => 'Like bien ajouté',
+            'likes' => $likeRepo->count(['question' => $question])
+        ], 200);
     }
 }
 
