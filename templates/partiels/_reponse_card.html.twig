@@ -38,10 +38,6 @@
 
             {% endif %}
         </div>
-
-        {% if reponse.question.reponseValid.id != reponse.id %}
-            <div class="home-question-vote"></div>
-        {% else %}
             <div class="home-question-vote">
                 <a href="{{ path('reponse_like', {'id': reponse.id}) }}" class="btn btn-link js-like">
                     {% if app.user and reponse.isReponseLikedByUser(app.user) %}
@@ -53,7 +49,5 @@
                     <span class="js-label">J'aime</span>
                 </a>
             </div>
-        {% endif %}
-
     </div>
 </div>
